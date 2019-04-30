@@ -25,29 +25,21 @@ func main() {
 		ReplaceAllString(string(credentials), "")
 
 	decoder := xml.NewDecoder(strings.NewReader(sanitizedCredentials))
-	readToken(decoder)
+	parseXml(decoder)
 }
 
-func readToken(decoder *xml.Decoder) {
-	var nodeName string
-	decoder.Token()
+func parseXml(decoder *xml.Decoder) {
 	for {
 		token, err := decoder.Token()
 		if err == io.EOF {
-			log.Print("Finished reading whole file.")
 			break
 		}
-		if err != nil {
-			log.Println("Error when tokenizing:", err)
-		}
-		if token == nil {
-			log.Print("No token")
-			break
-		}
+		check(err)
 		switch node := token.(type) {
 		case xml.StartElement:
-			nodeName = node.Name.Local
-			println("Node:", nodeName)
+			println("StartElement=", node.Name.Local)
+		case xml.CharData:
+			println("CharData=", string(node))
 		default:
 		}
 	}
