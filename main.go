@@ -1,12 +1,11 @@
 package main
 
 import (
-	"encoding/xml"
-	"io"
+	"fmt"
+	"github.com/beevik/etree"
 	"io/ioutil"
 	"log"
 	"regexp"
-	"strings"
 )
 
 func main() {
@@ -24,23 +23,15 @@ func main() {
 		MustCompile("(?m)^.*<?xml.*$").
 		ReplaceAllString(string(credentials), "")
 
-	decoder := xml.NewDecoder(strings.NewReader(sanitizedCredentials))
-	parseXml(decoder)
-}
-
-func parseXml(decoder *xml.Decoder) {
-	for {
-		token, err := decoder.Token()
-		if err == io.EOF {
-			break
-		}
-		check(err)
-		switch node := token.(type) {
-		case xml.StartElement:
-			println("StartElement=", node.Name.Local)
-		case xml.CharData:
-			println("CharData=", string(node))
-		default:
+	doc := etree.NewDocument()
+	if err := doc.ReadFromString(sanitizedCredentials); err != nil {
+		panic(err)
+	}
+	for _, node := range doc.FindElements("//java.util.concurrent.CopyOnWriteArrayList/*") {
+		children := node.ChildElements()
+		fmt.Println(node.Tag)
+		for _, child := range children {
+			fmt.Printf("\t%s=%s\n", child.Tag, child.Text())
 		}
 	}
 }
