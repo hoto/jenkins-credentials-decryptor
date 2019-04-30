@@ -8,7 +8,20 @@ import (
 	"regexp"
 )
 
+const (
+	credentialsXpath = "//java.util.concurrent.CopyOnWriteArrayList/*"
+)
+
 func main() {
+	for i, credential := range readCredentialsXml().FindElements(credentialsXpath) {
+		fmt.Println(i)
+		for _, field := range credential.ChildElements() {
+			fmt.Printf("\t%s=%s\n", field.Tag, field.Text())
+		}
+	}
+}
+
+func readCredentialsXml() *etree.Document {
 	credentials, err := ioutil.ReadFile("test/resources/credentials.xml")
 	check(err)
 	/*
@@ -22,18 +35,11 @@ func main() {
 	sanitizedCredentials := regexp.
 		MustCompile("(?m)^.*<?xml.*$").
 		ReplaceAllString(string(credentials), "")
-
 	doc := etree.NewDocument()
 	if err := doc.ReadFromString(sanitizedCredentials); err != nil {
 		panic(err)
 	}
-	for _, node := range doc.FindElements("//java.util.concurrent.CopyOnWriteArrayList/*") {
-		children := node.ChildElements()
-		fmt.Println(node.Tag)
-		for _, child := range children {
-			fmt.Printf("\t%s=%s\n", child.Tag, child.Text())
-		}
-	}
+	return doc
 }
 
 func check(err error) {
