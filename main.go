@@ -21,25 +21,22 @@ func main() {
 	}
 }
 
+/*
+ HACK ALERT:
+ Stripping xml version line as current native and third party xml decoders
+ refuses to parse xml version 1.0+
+ Jenkins uses xml version 1.1+ so this may blow up.
+*/
 func readCredentialsXml() *etree.Document {
 	credentials, err := ioutil.ReadFile("test/resources/credentials.xml")
 	check(err)
-	/*
-	 HACK ALERT:
-	 Stripping xml version line as current native and third party xml decoders
-	 refuses to parse xml version 1.0+
-	 Jenkins uses xml version 1.1+ so this may blow up.
-	 That line looks like this:
-	 <?xml version='1.1' encoding='UTF-8'?>
-	*/
 	sanitizedCredentials := regexp.
 		MustCompile("(?m)^.*<?xml.*$").
 		ReplaceAllString(string(credentials), "")
-	doc := etree.NewDocument()
-	if err := doc.ReadFromString(sanitizedCredentials); err != nil {
-		panic(err)
-	}
-	return doc
+	document := etree.NewDocument()
+	err = document.ReadFromString(sanitizedCredentials)
+	check(err)
+	return document
 }
 
 func check(err error) {
