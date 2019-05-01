@@ -20,12 +20,23 @@ func ReadCredentials(path string) *[]Credential {
 		credential := &Credential{
 			tags: map[string]string{},
 		}
-		for _, field := range credentialNode.ChildElements() {
-			credential.tags[field.Tag] = field.Text()
+		for _, child := range credentialNode.ChildElements() {
+			reduceFields(child, credential)
 		}
 		credentials = append(credentials, *credential)
 	}
 	return &credentials
+}
+
+/*
+  There is a possibility that a field will get overridden but I haven't seen an example like that.
+*/
+func reduceFields(node *etree.Element, credential *Credential) {
+	credential.tags[node.Tag] = node.Text()
+	for _, child := range node.ChildElements() {
+		credential.tags[child.Tag] = child.Text()
+		reduceFields(child, credential)
+	}
 }
 
 /*
