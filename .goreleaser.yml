@@ -1,0 +1,26 @@
+---
+builds:
+  - env:
+      - CGO_ENABLED=0
+    main: ./main.go
+archive:
+  format: binary
+  replacements:
+    darwin: Darwin
+    linux: Linux
+    386: i386
+    amd64: x86_64
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ .Tag }}-next"
+release:
+  prerelease: auto
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^Docs:'
+      - '^Test:'
+      - '^Update readme'
+      - '^Update readme.*'
