@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/beevik/etree"
 	"io/ioutil"
 	"regexp"
@@ -15,15 +14,13 @@ type Credential struct {
 	tags map[string]string
 }
 
-func readCredentials() *[]Credential {
+func ReadCredentials() *[]Credential {
 	credentials := make([]Credential, 0)
-	for i, credentialNode := range readCredentialsXml().FindElements(credentialsXpath) {
-		fmt.Println(i)
+	for _, credentialNode := range readCredentialsXml().FindElements(credentialsXpath) {
 		credential := &Credential{
 			tags: map[string]string{},
 		}
 		for _, field := range credentialNode.ChildElements() {
-			fmt.Printf("\t%s=%s\n", field.Tag, field.Text())
 			credential.tags[field.Tag] = field.Text()
 		}
 		credentials = append(credentials, *credential)
