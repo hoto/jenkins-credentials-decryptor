@@ -30,7 +30,7 @@ func ReadCredentials(path string) *[]Credential {
 }
 
 /*
-  There is a possibility that a field will get overridden but I haven't seen an example like that.
+  There is a possibility that a field could get overridden but I haven't seen an example of that yet.
 */
 func reduceFields(node *etree.Element, credential *Credential) {
 	credential.tags[node.Tag] = strings.TrimSpace(node.Text())
@@ -40,20 +40,22 @@ func reduceFields(node *etree.Element, credential *Credential) {
 	}
 }
 
-/*
- HACK ALERT:
- Stripping xml version line as current native and third party xml decoders
- refuses to parse xml version 1.0+
- Jenkins uses xml version 1.1+ so this may blow up.
-*/
 func parseCredentialsXml(path string) *etree.Document {
-	credentials, err := ioutil.ReadFile(path)
+	credentialsXml, err := ioutil.ReadFile(path)
 	check(err)
-	sanitizedCredentials := regexp.
-		MustCompile("(?m)^.*<?xml.*$").
-		ReplaceAllString(string(credentials), "")
 	document := etree.NewDocument()
-	err = document.ReadFromString(sanitizedCredentials)
+	err = document.ReadFromString(stripXmlVersion(credentialsXml))
 	check(err)
 	return document
+}
+
+/*
+ HACK ALERT:
+ Stripping xml version because I could not find any decoder which would parse xml version 1.0+
+ Jenkins uses xml version 1.1+ so this may blow up.
+*/
+func stripXmlVersion(credentials []byte) string {
+	return regexp.
+		MustCompile("(?m)^.*<?xml.*$").
+		ReplaceAllString(string(credentials), "")
 }
