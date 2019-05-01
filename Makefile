@@ -10,7 +10,7 @@ dependencies:
 	dep ensure
 
 build: dependencies
-	go build -o bin/jenkins_credentials_decryptor .
+	go build -o bin/jenkins-credentials-decryptor .
 
 test:
 	go test -v ./...
