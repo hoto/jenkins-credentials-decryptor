@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	credentials := ReadCredentials()
+	credentials := ReadCredentials("test/resources/credentials.xml")
 	for i, credential := range *credentials {
 		fmt.Println(i)
 		for k, v := range credential.tags {

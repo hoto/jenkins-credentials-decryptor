@@ -30,7 +30,7 @@ var (
 func Test_reads_credentials_from_xml_file(t *testing.T) {
 	expected := []Credential{*gitlab, *bastion}
 
-	credentials := ReadCredentials()
+	credentials := ReadCredentials("test/resources/credentials.xml")
 
 	assert.Equal(t, expected, *credentials)
 }

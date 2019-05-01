@@ -14,9 +14,9 @@ type Credential struct {
 	tags map[string]string
 }
 
-func ReadCredentials() *[]Credential {
+func ReadCredentials(path string) *[]Credential {
 	credentials := make([]Credential, 0)
-	for _, credentialNode := range readCredentialsXml().FindElements(credentialsXpath) {
+	for _, credentialNode := range readCredentialsXml(path).FindElements(credentialsXpath) {
 		credential := &Credential{
 			tags: map[string]string{},
 		}
@@ -34,8 +34,8 @@ func ReadCredentials() *[]Credential {
  refuses to parse xml version 1.0+
  Jenkins uses xml version 1.1+ so this may blow up.
 */
-func readCredentialsXml() *etree.Document {
-	credentials, err := ioutil.ReadFile("test/resources/credentials.xml")
+func readCredentialsXml(path string) *etree.Document {
+	credentials, err := ioutil.ReadFile(path)
 	check(err)
 	sanitizedCredentials := regexp.
 		MustCompile("(?m)^.*<?xml.*$").
