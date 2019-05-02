@@ -37,12 +37,12 @@ then run a container with disabled network:
     docker run \
       --rm \
       --network none \
-      --workdir /usr/local/src
-      --volume master.key:/master.key
+      --workdir / \
+      --volume master.key:/master.key \
       --volume hudson.util.Secret:/hudson.util.Secret \
       --volume credentials.xml:/credentials.xml \
       docker.io/hoto/jenkins-credentials-decryptor:latest \
-      jenkins-credentials-decryptor \
+      /jenkins-credentials-decryptor \
         -m master.key \
         -s hudson.util.Secret \
         -c credentials.xml 
