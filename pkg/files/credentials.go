@@ -1,8 +1,9 @@
-package main
+package files
 
 import (
 	"github.com/beevik/etree"
 	"io/ioutil"
+	"log"
 	"regexp"
 	"strings"
 )
@@ -12,14 +13,14 @@ const (
 )
 
 type Credential struct {
-	tags map[string]string
+	Tags map[string]string
 }
 
 func ReadCredentials(path string) *[]Credential {
 	credentials := make([]Credential, 0)
 	for _, credentialNode := range parseCredentialsXml(path).FindElements(credentialsXpath) {
 		credential := &Credential{
-			tags: map[string]string{},
+			Tags: map[string]string{},
 		}
 		for _, child := range credentialNode.ChildElements() {
 			reduceFields(child, credential)
@@ -33,9 +34,9 @@ func ReadCredentials(path string) *[]Credential {
   There is a possibility that a field could get overridden but I haven't seen an example of that yet.
 */
 func reduceFields(node *etree.Element, credential *Credential) {
-	credential.tags[node.Tag] = strings.TrimSpace(node.Text())
+	credential.Tags[node.Tag] = strings.TrimSpace(node.Text())
 	for _, child := range node.ChildElements() {
-		credential.tags[child.Tag] = strings.TrimSpace(child.Text())
+		credential.Tags[child.Tag] = strings.TrimSpace(child.Text())
 		reduceFields(child, credential)
 	}
 }
@@ -58,4 +59,10 @@ func stripXmlVersion(credentials []byte) string {
 	return regexp.
 		MustCompile("(?m)^.*<?xml.*$").
 		ReplaceAllString(string(credentials), "")
+}
+
+func check(err error) {
+	if err != nil {
+		log.Panic(err)
+	}
 }

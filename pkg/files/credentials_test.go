@@ -1,4 +1,4 @@
-package main
+package files
 
 import (
 	"github.com/stretchr/testify/assert"
@@ -7,7 +7,7 @@ import (
 
 var (
 	gitlab = &Credential{
-		tags: map[string]string{
+		Tags: map[string]string{
 			"scope":       "GLOBAL",
 			"id":          "gitlab",
 			"description": "Gitlab admin user",
@@ -16,7 +16,7 @@ var (
 		},
 	}
 	bastion = &Credential{
-		tags: map[string]string{
+		Tags: map[string]string{
 			"scope":            "GLOBAL",
 			"id":               "production-bastion",
 			"description":      "Production bastion ssh key",
@@ -31,7 +31,7 @@ var (
 func Test_reads_credentials_from_xml_file(t *testing.T) {
 	expectedCredentials := []Credential{*gitlab, *bastion}
 
-	credentials := ReadCredentials("test/resources/credentials.xml")
+	credentials := ReadCredentials("../../test/resources/credentials.xml")
 
 	assert.Equal(t, expectedCredentials, *credentials)
 }

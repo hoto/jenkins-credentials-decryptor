@@ -78,3 +78,5 @@ Install to global golang bin directory:
 
     make install
 
+---
+_Following_ [_Standard Go Project Layout_](https://github.com/golang-standards/project-layout)
