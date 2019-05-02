@@ -49,7 +49,7 @@ then run a container with disabled network:
       
 ### Build the binary yourself
 
-If you worried about running a random binary from the internet then:
+If you are worried about running a random binary from the internet then:
 
     git clone https://github.com/hoto/jenkins-credentials-decryptor.git
     make build
