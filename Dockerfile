@@ -1,4 +1,4 @@
-FROM golang:1.12.4-alpine AS builder
+FROM golang:1.12.4 AS builder
 ENV PROJECT_PATH="$GOPATH/src/github.com/hoto/jenkins-credentials-decryptor"
 ENV BINARY_PATH="$PROJECT_PATH/bin/jenkins-credentials-decryptor"
 WORKDIR $PROJECT_PATH
