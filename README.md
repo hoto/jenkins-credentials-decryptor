@@ -11,7 +11,12 @@ Command line tool for decrypting and dumping Jenkins credentials.
 
 Jenkins stores encrypted credentials in `credentials.xml` file.  
 To decrypt them you need the `master.key` and `hudson.util.Secret` files.  
-All three files are located inside Jenkins home directory.
+
+All three files are located inside Jenkins home directory:
+
+    $JENKINS_HOME/secrets/master.key
+    $JENKINS_HOME/secrets/hudson.util.Secret
+    $JENKINS_HOME/credentials.xml 
 
 ### Run using binary
 
@@ -23,12 +28,12 @@ Download binary from [releases](https://github.com/hoto/jenkins-credentials-decr
 
     chmod +x jenkins-credentials-decryptor
 
-Ssh into the Jenkins box or copy the files locally then run:
+SSH into Jenkins box or copy the files locally then run:
 
     jenkins-credentials-decryptor \
-      -m $JENKINS_HOME/secrets/master.key \
-      -s $JENKINS_HOME/hudson.util.Secret \
-      -c $JENKINS_HOME/credentials.xml 
+      -m master.key \
+      -s hudson.util.Secret \
+      -c credentials.xml 
 ### Run using docker
     
 If you are worried about me sending your credentials over the network (I can assure you I don't do that) 
@@ -49,7 +54,7 @@ then run a container with disabled network:
         
 ### Build the binary yourself
 
-If you are worried about running a random binary from the internet then:
+If you are worried about executing a random binary from the internet then:
 
     git clone https://github.com/hoto/jenkins-credentials-decryptor.git
     make build
