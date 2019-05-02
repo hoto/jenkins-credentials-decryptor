@@ -38,15 +38,15 @@ then run a container with disabled network:
       --rm \
       --network none \
       --workdir / \
-      --volume master.key:/master.key \
-      --volume hudson.util.Secret:/hudson.util.Secret \
-      --volume credentials.xml:/credentials.xml \
+      --mount "type=bind,src=$PWD/master.key,dst=/master.key" \
+      --mount "type=bind,src=$PWD/hudson.util.Secret,dst=/hudson.util.Secret" \
+      --mount "type=bind,src=$PWD/credentials.xml,dst=/credentials.xml" \
       docker.io/hoto/jenkins-credentials-decryptor:latest \
       /jenkins-credentials-decryptor \
         -m master.key \
         -s hudson.util.Secret \
         -c credentials.xml 
-      
+        
 ### Build the binary yourself
 
 If you are worried about running a random binary from the internet then:
