@@ -1,4 +1,4 @@
-package files
+package cryptography
 
 import (
 	"crypto/aes"
@@ -26,14 +26,18 @@ func DecryptHudsonSecret(masterKey []byte, hudsonSecret []byte) ([]byte, error) 
 	if secretContainsChecksum(decryptedSecret) {
 		return decryptedSecret, nil
 	} else {
-		msg := fmt.Sprintf(
-			"Error. Decrypted hudson secret does not contain expected checksum.\n"+
-				"Expected checksum keyword:\n\t%s\n"+
-				"Decrypted secret:\n\t%q",
-			magicChecksum,
-			decryptedSecret)
-		return nil, errors.New(msg)
+		return nil, createError(decryptedSecret)
 	}
+}
+
+func createError(decryptedSecret []byte) error {
+	msg := fmt.Sprintf(
+		"Error. Decrypted hudson secret does not contain expected checksum.\n"+
+			"Expected checksum keyword:\n\t%s\n"+
+			"Decrypted secret:\n\t%q",
+		magicChecksum,
+		decryptedSecret)
+	return errors.New(msg)
 }
 
 func secretContainsChecksum(encryptedSecret []byte) bool {

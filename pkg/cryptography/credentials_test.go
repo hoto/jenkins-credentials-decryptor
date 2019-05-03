@@ -1,4 +1,4 @@
-package files
+package cryptography
 
 import (
 	"github.com/stretchr/testify/assert"
@@ -31,7 +31,7 @@ var (
 func Test_reads_credentials_from_xml_file(t *testing.T) {
 	expectedCredentials := []Credential{*gitlab, *bastion}
 
-	credentials := ReadCredentials("../../test/resources/credentials.xml")
+	actualCredentials := ReadCredentials("../../test/resources/credentials.xml")
 
-	assert.Equal(t, expectedCredentials, *credentials)
+	assert.Equal(t, expectedCredentials, *actualCredentials)
 }
