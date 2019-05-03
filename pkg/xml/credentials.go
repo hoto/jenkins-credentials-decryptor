@@ -1,4 +1,4 @@
-package cryptography
+package xml
 
 import (
 	"github.com/beevik/etree"
