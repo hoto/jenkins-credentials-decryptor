@@ -14,6 +14,7 @@ import (
 )
 
 func main() {
+	// TODO handle flags for files paths
 	credentialsXml := readFile("test/resources/credentials.xml")
 	masterKey := readFile("test/resources/master.key")
 	encryptedHudsonSecret := readFile("test/resources/hudson.util.Secret")
@@ -34,7 +35,7 @@ func decodeBase64Fields(credential xml.Credential, secret []byte) {
 			encoded := regexp.MustCompile("{(.*?)}").FindStringSubmatch(v)[1]
 			decoded, err := base64.StdEncoding.DecodeString(encoded)
 			check(err)
-			if decoded[0] == 1 {
+			if decoded[0] == 1 { // TODO handle the other case
 				/*
 				  p = p[1:] #Strip the version
 				  p = p[4:] # Strip the iv length
