@@ -1,3 +1,5 @@
+.PHONY: clean dependencies build test all
+
 all: clean build test
 
 clean:

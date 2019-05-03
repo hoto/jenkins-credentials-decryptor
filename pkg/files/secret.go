@@ -5,7 +5,6 @@ import (
 	"crypto/sha256"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"strings"
 )
 
@@ -13,30 +12,36 @@ const (
 	magicChecksum = "::::MAGIC::::"
 )
 
-func Decrypt(masterKeyPath string, hudonsSecretPath string) ([]byte, error) {
-	masterKey, err := ioutil.ReadFile(masterKeyPath)
-	check(err)
-	secret, err := ioutil.ReadFile(hudonsSecretPath)
-	check(err)
-
+/*
+  Decrypts hudson.util.Secret using the master.key
+  1. master.key is hashed and trimmed to 16 bytes
+  2. master key is used to decrypt hudson.util.Secret with AES-128-ECB
+  3. decrypted secret is trimmed to 16 bytes
+  4. secret is returned, later to be used for decrypting Jenkins credentials with AES-128-ECB
+*/
+func DecryptHudsonSecret(masterKey []byte, hudsonSecret []byte) ([]byte, error) {
 	hashedMasterKey := hashMasterKey(masterKey)
+	decryptedSecret := decryptAes128Ecb(hudsonSecret, hashedMasterKey)
 
-	encryptedSecret := decryptAes128Ecb(secret, hashedMasterKey)
-	if strings.Contains(string(encryptedSecret), magicChecksum) {
-		return encryptedSecret, nil
+	if secretContainsChecksum(decryptedSecret) {
+		return decryptedSecret, nil
 	} else {
 		msg := fmt.Sprintf(
-			"Error. Decrypted secret does not contain expected checksum.\n"+
-				"Expected checksum:\n\t%s\n"+
+			"Error. Decrypted hudson secret does not contain expected checksum.\n"+
+				"Expected checksum keyword:\n\t%s\n"+
 				"Decrypted secret:\n\t%q",
 			magicChecksum,
-			encryptedSecret)
+			decryptedSecret)
 		return nil, errors.New(msg)
 	}
 }
 
+func secretContainsChecksum(encryptedSecret []byte) bool {
+	return strings.Contains(string(encryptedSecret), magicChecksum)
+}
+
 /*
-   Hash needs to be 16 bits as Jenkins uses AES-128 encryption.
+   Hash needs to be 16 bytes as Jenkins uses AES-128 encryption.
 */
 func hashMasterKey(masterKey []byte) []byte {
 	hasher := sha256.New()
