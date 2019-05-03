@@ -3,14 +3,25 @@ package main
 import (
 	"fmt"
 	"github.com/hoto/jenkins-credentials-decryptor/pkg/cryptography"
+	"io/ioutil"
+	"log"
 )
 
 func main() {
-	credentials := cryptography.ReadCredentials("test/resources/credentials.xml")
+	credentialsXml, err := ioutil.ReadFile("test/resources/credentials.xml")
+	check(err)
+
+	credentials := cryptography.ParseCredentialsXml(credentialsXml)
 	for i, credential := range *credentials {
 		fmt.Println(i)
 		for k, v := range credential.Tags {
 			fmt.Printf("\t%s=%s\n", k, v)
 		}
+	}
+}
+
+func check(err error) {
+	if err != nil {
+		log.Panic(err)
 	}
 }

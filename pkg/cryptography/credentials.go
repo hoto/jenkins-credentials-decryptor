@@ -2,7 +2,6 @@ package cryptography
 
 import (
 	"github.com/beevik/etree"
-	"io/ioutil"
 	"log"
 	"regexp"
 	"strings"
@@ -16,9 +15,15 @@ type Credential struct {
 	Tags map[string]string
 }
 
-func ReadCredentials(path string) *[]Credential {
+/*
+  Converts credentials.xml into a slice of structs with all fields reduced.
+  XML version is ignored as I could no find a parser which could handle xml 1.0+
+  Jenkins credentials.xml is using xml 1.1 but it does not seem to be using any of the new features.
+  With xml 1.0+ this can eventually blow up.
+*/
+func ParseCredentialsXml(credentialsXml []byte) *[]Credential {
 	credentials := make([]Credential, 0)
-	for _, credentialNode := range parseCredentialsXml(path).FindElements(credentialsXpath) {
+	for _, credentialNode := range parseXml(credentialsXml).FindElements(credentialsXpath) {
 		credential := &Credential{
 			Tags: map[string]string{},
 		}
@@ -41,11 +46,9 @@ func reduceFields(node *etree.Element, credential *Credential) {
 	}
 }
 
-func parseCredentialsXml(path string) *etree.Document {
-	credentialsXml, err := ioutil.ReadFile(path)
-	check(err)
+func parseXml(credentialsXml []byte) *etree.Document {
 	document := etree.NewDocument()
-	err = document.ReadFromString(stripXmlVersion(credentialsXml))
+	err := document.ReadFromString(stripXmlVersion(credentialsXml))
 	check(err)
 	return document
 }
