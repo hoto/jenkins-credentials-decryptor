@@ -21,7 +21,7 @@ const (
 */
 func DecryptHudsonSecret(masterKey []byte, hudsonSecret []byte) ([]byte, error) {
 	hashedMasterKey := hashMasterKey(masterKey)
-	decryptedSecret := decryptAes128Ecb(hudsonSecret, hashedMasterKey)
+	decryptedSecret := DecryptAes128Ecb(hudsonSecret, hashedMasterKey)
 
 	if secretContainsChecksum(decryptedSecret) {
 		return decryptedSecret[:16], nil
@@ -56,7 +56,7 @@ func hashMasterKey(masterKey []byte) []byte {
 /*
    ECB mode is deprecated and not included in golang crypto library.
 */
-func decryptAes128Ecb(encryptedData []byte, key []byte) []byte {
+func DecryptAes128Ecb(encryptedData []byte, key []byte) []byte {
 	cipher, _ := aes.NewCipher(key)
 	decrypted := make([]byte, len(encryptedData))
 	size := 16

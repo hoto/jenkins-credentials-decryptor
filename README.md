@@ -14,9 +14,9 @@ To decrypt them you need the `master.key` and `hudson.util.Secret` files.
 
 All three files are located inside Jenkins home directory:
 
+    $JENKINS_HOME/credentials.xml 
     $JENKINS_HOME/secrets/master.key
     $JENKINS_HOME/secrets/hudson.util.Secret
-    $JENKINS_HOME/credentials.xml 
 
 ### Run using binary
 
@@ -34,6 +34,7 @@ SSH into Jenkins box or copy the files locally then run:
       -m master.key \
       -s hudson.util.Secret \
       -c credentials.xml 
+      
 ### Run using docker
     
 If you are worried about me sending your credentials over the network (I can assure you I don't do that) 
