@@ -24,7 +24,7 @@ func DecryptHudsonSecret(masterKey []byte, hudsonSecret []byte) ([]byte, error) 
 	decryptedSecret := decryptAes128Ecb(hudsonSecret, hashedMasterKey)
 
 	if secretContainsChecksum(decryptedSecret) {
-		return decryptedSecret, nil
+		return decryptedSecret[:16], nil
 	} else {
 		return nil, createError(decryptedSecret)
 	}
