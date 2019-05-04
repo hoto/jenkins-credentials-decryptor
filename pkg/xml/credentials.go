@@ -2,7 +2,6 @@ package xml
 
 import (
 	"github.com/beevik/etree"
-	"log"
 	"regexp"
 	"strings"
 )
@@ -21,9 +20,13 @@ type Credential struct {
   Jenkins credentials.xml is using xml 1.1 but it does not seem to be using any of the new features.
   With xml 1.0+ this can eventually blow up.
 */
-func ParseCredentialsXml(credentialsXml []byte) *[]Credential {
+func ParseCredentialsXml(credentialsXml []byte) (*[]Credential, error) {
 	credentials := make([]Credential, 0)
-	for _, credentialNode := range parseXml(credentialsXml).FindElements(credentialsXpath) {
+	credentialsDocument, err := parseXml(credentialsXml)
+	if err != nil {
+		return &credentials, err
+	}
+	for _, credentialNode := range credentialsDocument.FindElements(credentialsXpath) {
 		credential := &Credential{
 			Tags: map[string]string{},
 		}
@@ -32,7 +35,7 @@ func ParseCredentialsXml(credentialsXml []byte) *[]Credential {
 		}
 		credentials = append(credentials, *credential)
 	}
-	return &credentials
+	return &credentials, nil
 }
 
 /*
@@ -46,11 +49,13 @@ func reduceFields(node *etree.Element, credential *Credential) {
 	}
 }
 
-func parseXml(credentialsXml []byte) *etree.Document {
+func parseXml(credentialsXml []byte) (*etree.Document, error) {
 	document := etree.NewDocument()
 	err := document.ReadFromString(stripXmlVersion(credentialsXml))
-	check(err)
-	return document
+	if err != nil {
+		return nil, err
+	}
+	return document, nil
 }
 
 /*
@@ -62,10 +67,4 @@ func stripXmlVersion(credentials []byte) string {
 	return regexp.
 		MustCompile("(?m)^.*<?xml.*$").
 		ReplaceAllString(string(credentials), "")
-}
-
-func check(err error) {
-	if err != nil {
-		log.Panic(err)
-	}
 }

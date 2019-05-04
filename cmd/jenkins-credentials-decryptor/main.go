@@ -15,10 +15,11 @@ func main() {
 	masterKey := readFile(config.MasterKeyPath)
 	encryptedHudsonSecret := readFile(config.HudsonSecretPath)
 
+	credentials, err := xml.ParseCredentialsXml(credentialsXml)
+	check(err)
 	secret, err := cryptography.DecryptHudsonSecret(masterKey, encryptedHudsonSecret)
 	check(err)
 
-	credentials := xml.ParseCredentialsXml(credentialsXml)
 	cryptography.DecryptCredentials(credentials, secret)
 }
 
