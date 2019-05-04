@@ -23,7 +23,7 @@ All three files are located inside Jenkins home directory:
 Download binary from [releases](https://github.com/hoto/jenkins-credentials-decryptor/releases), Linux and Mac only:
 
     curl -L \
-      "https://github.com/hoto/jenkins-credentials-decryptor/releases/download/1.0.0/jenkins-credentials-decryptor_1.0.0_$(uname -s)_$(uname -m)" \
+      "https://github.com/hoto/jenkins-credentials-decryptor/releases/download/0.0.5-alpha/jenkins-credentials-decryptor_0.0.5-alpha_$(uname -s)_$(uname -m)" \
        -o jenkins-credentials-decryptor
 
     chmod +x jenkins-credentials-decryptor
