@@ -5,6 +5,7 @@ import (
 	"crypto/cipher"
 	"encoding/base64"
 	"fmt"
+	"github.com/hoto/jenkins-credentials-decryptor/pkg/config"
 	"github.com/hoto/jenkins-credentials-decryptor/pkg/cryptography"
 	"github.com/hoto/jenkins-credentials-decryptor/pkg/xml"
 	"io/ioutil"
@@ -14,10 +15,11 @@ import (
 )
 
 func main() {
-	// TODO handle flags for files paths
-	credentialsXml := readFile("test/resources/credentials.xml")
-	masterKey := readFile("test/resources/master.key")
-	encryptedHudsonSecret := readFile("test/resources/hudson.util.Secret")
+	config.ParseFlags()
+
+	credentialsXml := readFile(config.CredentialsXmlPath)
+	masterKey := readFile(config.MasterKeyPath)
+	encryptedHudsonSecret := readFile(config.HudsonSecretPath)
 
 	secret, err := cryptography.DecryptHudsonSecret(masterKey, encryptedHudsonSecret)
 	check(err)
