@@ -33,7 +33,7 @@ func Test_reads_credentials_from_xml_file(t *testing.T) {
 	expectedCredentials := []Credential{*gitlab, *bastion}
 	credentialsXml, _ := ioutil.ReadFile("../../test/resources/credentials.xml")
 
-	actualCredentials := ParseCredentialsXml(credentialsXml)
+	actualCredentials, _ := ParseCredentialsXml(credentialsXml)
 
 	assert.Equal(t, expectedCredentials, *actualCredentials)
 }
