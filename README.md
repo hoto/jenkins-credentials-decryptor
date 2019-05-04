@@ -28,9 +28,16 @@ Download binary from [releases](https://github.com/hoto/jenkins-credentials-decr
 
     chmod +x jenkins-credentials-decryptor
 
-SSH into Jenkins box or copy the files locally then run:
+SSH into Jenkins box and run:
 
-    jenkins-credentials-decryptor \
+    ./jenkins-credentials-decryptor \
+      -m $JENKINS_HOME/secrets/master.key \
+      -s $JENKINS_HOME/secrets/hudson.util.Secret \
+      -c $JENKINS_HOME/credentials.xml 
+      
+Or if you have the files locally:
+
+    ./jenkins-credentials-decryptor \
       -m master.key \
       -s hudson.util.Secret \
       -c credentials.xml 
@@ -39,6 +46,23 @@ SSH into Jenkins box or copy the files locally then run:
     
 If you are worried about me sending your credentials over the network (I can assure you I don't do that) 
 then run a container with disabled network:
+
+From Jenkins box:
+
+    docker run \
+      --rm \
+      --network none \
+      --workdir / \
+      --mount "type=bind,src=$JENKINS_HOME/secrets/master.key,dst=/master.key" \
+      --mount "type=bind,src=$JENKINS_HOME/secrets/hudson.util.Secret,dst=/hudson.util.Secret" \
+      --mount "type=bind,src=$JENKINS_HOME/credentials.xml,dst=/credentials.xml" \
+      docker.io/hoto/jenkins-credentials-decryptor:latest \
+      /jenkins-credentials-decryptor \
+        -m master.key \
+        -s hudson.util.Secret \
+        -c credentials.xml 
+
+With files locally:
 
     docker run \
       --rm \
