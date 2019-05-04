@@ -18,7 +18,7 @@ All three files are located inside Jenkins home directory:
     $JENKINS_HOME/secrets/master.key
     $JENKINS_HOME/secrets/hudson.util.Secret
 
-### Run using binary
+### Run using a binary
 
 Download binary from [releases](https://github.com/hoto/jenkins-credentials-decryptor/releases), Linux and Mac only:
 
