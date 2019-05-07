@@ -92,7 +92,7 @@ Binary will be in the `bin` folder.
 
 Get:
 
-    go get github.com/hoto/jenkins-credentials-decryptor/
+    go get github.com/hoto/jenkins-credentials-decryptor/cmd/jenkins-credentials-decryptor/
 
 Download dependencies:
 
