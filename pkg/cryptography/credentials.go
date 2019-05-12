@@ -4,7 +4,6 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"encoding/base64"
-	"fmt"
 	"github.com/hoto/jenkins-credentials-decryptor/pkg/xml"
 	"log"
 	"regexp"
@@ -23,7 +22,6 @@ func DecryptCredentials(credentials *[]xml.Credential, secret []byte) ([]xml.Cre
 				decryptedCredentials[i].Tags[key] = decrypted
 			}
 		}
-		printFields(i, credential) // TODO: move to main
 
 	}
 	return decryptedCredentials, nil
@@ -76,13 +74,6 @@ func decrypt(decoded []byte, secret []byte) string {
 		return string(withoutPadding)
 	}
 	return string(decoded)
-}
-
-func printFields(i int, credential xml.Credential) {
-	fmt.Println(i)
-	for k, v := range credential.Tags {
-		fmt.Printf("\t%s=%s\n", k, v)
-	}
 }
 
 func check(err error) {
