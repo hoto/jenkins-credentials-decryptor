@@ -82,7 +82,9 @@ func decryptNewCredentials(decoded []byte, secret []byte) string {
 }
 
 func decryptLegacyCredentials(decoded []byte, secret []byte) string {
-	return string(decryptAes128Ecb(decoded, secret))
+	decrypted := string(decryptAes128Ecb(decoded, secret))
+	strings.Replace(decrypted, "::::MAGIC::::", "", -1)
+	return string(decrypted)
 }
 
 func check(err error) {
