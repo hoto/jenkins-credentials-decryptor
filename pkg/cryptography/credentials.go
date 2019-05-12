@@ -37,11 +37,20 @@ func isBase64EncodedSecret(text string) bool {
 			return true
 		}
 	}
+	if strings.HasSuffix(text, "=") {
+		_, err := base64.StdEncoding.DecodeString(text)
+		if err == nil {
+			return true
+		}
+	}
 	return false
 }
 
 func base64Decode(text string) []byte {
-	encoded := regexp.MustCompile("{(.*?)}").FindStringSubmatch(text)[1]
+	encoded := text
+	if strings.HasPrefix(text, "{") && strings.HasSuffix(text, "}") {
+		encoded = regexp.MustCompile("{(.*?)}").FindStringSubmatch(text)[1]
+	}
 	decoded, err := base64.StdEncoding.DecodeString(encoded)
 	check(err)
 	return decoded
@@ -49,16 +58,6 @@ func base64Decode(text string) []byte {
 
 func decrypt(decoded []byte, secret []byte) string {
 	if decoded[0] == 1 { // TODO handle the other case
-		/*
-		  p = p[1:] #Strip the version
-		  p = p[4:] # Strip the iv length
-		  p = p[4:] # Strip the data length
-		  iv_length = 16
-		  iv = p[:iv_length]
-		  p = p[iv_length:]
-		  o = AES.new(secret, AES.MODE_CBC, iv)
-		  decrypted_p = o.decrypt(p)
-		*/
 		cipherText := decoded[1:]   // strip version
 		cipherText = cipherText[4:] // strip iv length
 		cipherText = cipherText[4:] // strip data length
@@ -71,9 +70,12 @@ func decrypt(decoded []byte, secret []byte) string {
 		mode := cipher.NewCBCDecrypter(block, iv)
 		mode.CryptBlocks(cipherText, cipherText)
 
-		return strings.TrimSpace(string(cipherText)) // TODO can a password have space at the front or end?
+		trimmed := strings.TrimSpace(string(cipherText))
+		withoutPadding := strings.Replace(string(trimmed), string('\x05'), "", -1)
+		withoutPadding = strings.Replace(string(withoutPadding), string('\x06'), "", -1)
+		return string(withoutPadding)
 	}
-	return "ERROR_UNKNOWN_VERSION"
+	return string(decoded)
 }
 
 func printFields(i int, credential xml.Credential) {

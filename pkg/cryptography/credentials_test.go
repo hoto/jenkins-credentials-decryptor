@@ -11,6 +11,12 @@ var (
 	encryptedCredentials = []xml.Credential{
 		{
 			Tags: map[string]string{
+				"username": "xfireadmin",
+				"password": "AQAAABAAAAAQtnCexFYLFtmTQCL0x3wnirMnXVA7aZy+lfrfso+SjHI=",
+			},
+		},
+		{
+			Tags: map[string]string{
 				"username": "gitlabadmin",
 				"password": "{AQAAABAAAAAgPT7JbBVgyWiivobt0CJEduLyP0lB3uyTj+D5WBvVk6jyG6BQFPYGN4Z3VJN2JLDm}",
 			},
@@ -26,14 +32,20 @@ var (
 	decryptedCredentials = []xml.Credential{
 		{
 			Tags: map[string]string{
+				"username": "xfireadmin",
+				"password": "ilovexfire",
+			},
+		},
+		{
+			Tags: map[string]string{
 				"username": "gitlabadmin",
 				"password": "Drmhze6EPcv0fN_81Bj",
 			},
 		},
 		{
 			Tags: map[string]string{
-				"username": "root",
-				"passphrase": "IEPkO5nYhEG",
+				"username":   "root",
+				"passphrase": "IEPkO5nYhEG",
 				"privateKey": `-----BEGIN RSA PRIVATE KEY-----
 MIICXAIBAAKBgQCwgxo7cl2RajAWFseL0JAIBJbZ6dFWBGcq7+TMkP8viDwfLj4u
 iYqERw+Y/lW0VZxuQuVMBfcCCINTG0S3W+MYPKiHKSaQWV53oOyPUCWaU1WjMHG4
