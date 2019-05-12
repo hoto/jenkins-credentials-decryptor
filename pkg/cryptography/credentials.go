@@ -17,7 +17,7 @@ func DecryptCredentials(credentials *[]xml.Credential, secret []byte) ([]xml.Cre
 
 	for i, credential := range *credentials {
 		for key, value := range credential.Tags {
-			if isEncrypted(value) {
+			if isBase64EncodedSecret(value) {
 				decoded := base64Decode(value)
 				decrypted := decrypt(decoded, secret)
 				decryptedCredentials[i].Tags[key] = decrypted
@@ -29,9 +29,15 @@ func DecryptCredentials(credentials *[]xml.Credential, secret []byte) ([]xml.Cre
 	return decryptedCredentials, nil
 }
 
-// TODO check for first and last char and in-between
-func isEncrypted(text string) bool {
-	return strings.Contains(text, "{") && strings.Contains(text, "}")
+func isBase64EncodedSecret(text string) bool {
+	if strings.HasPrefix(text, "{") && strings.HasSuffix(text, "}") {
+		encoded := regexp.MustCompile("{(.*?)}").FindStringSubmatch(text)[1]
+		_, err := base64.StdEncoding.DecodeString(encoded)
+		if err == nil {
+			return true
+		}
+	}
+	return false
 }
 
 func base64Decode(text string) []byte {
