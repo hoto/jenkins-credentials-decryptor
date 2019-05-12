@@ -55,25 +55,34 @@ func base64Decode(text string) []byte {
 }
 
 func decrypt(decoded []byte, secret []byte) string {
-	if decoded[0] == 1 { // TODO handle the other case
-		cipherText := decoded[1:]   // strip version
-		cipherText = cipherText[4:] // strip iv length
-		cipherText = cipherText[4:] // strip data length
-		ivLength := 16              // TODO calculate this
-		iv := cipherText[:ivLength]
-		cipherText = cipherText[ivLength:] //strip iv
-
-		block, err := aes.NewCipher(secret)
-		check(err)
-		mode := cipher.NewCBCDecrypter(block, iv)
-		mode.CryptBlocks(cipherText, cipherText)
-
-		trimmed := strings.TrimSpace(string(cipherText))
-		withoutPadding := strings.Replace(string(trimmed), string('\x05'), "", -1)
-		withoutPadding = strings.Replace(string(withoutPadding), string('\x06'), "", -1)
-		return string(withoutPadding)
+	if decoded[0] == 1 { // you've gotta love jenkins
+		return decryptNewCredentials(decoded, secret)
+	} else {
+		return decryptLegacyCredentials(decoded, secret)
 	}
-	return string(decoded)
+}
+
+func decryptNewCredentials(decoded []byte, secret []byte) string {
+	cipherText := decoded[1:]   // strip version
+	cipherText = cipherText[4:] // strip iv length
+	cipherText = cipherText[4:] // strip data length
+	ivLength := 16              // TODO calculate this
+	iv := cipherText[:ivLength]
+	cipherText = cipherText[ivLength:] //strip iv
+	block, err := aes.NewCipher(secret)
+	check(err)
+	mode := cipher.NewCBCDecrypter(block, iv)
+	mode.CryptBlocks(cipherText, cipherText)
+	trimmed := strings.TrimSpace(string(cipherText))
+
+	// TODO strip PKCS7 padding with math not by strings.Replace()
+	withoutPadding := strings.Replace(string(trimmed), string('\x05'), "", -1)
+	withoutPadding = strings.Replace(string(withoutPadding), string('\x06'), "", -1)
+	return withoutPadding
+}
+
+func decryptLegacyCredentials(decoded []byte, secret []byte) string {
+	return string(decryptAes128Ecb(decoded, secret))
 }
 
 func check(err error) {
