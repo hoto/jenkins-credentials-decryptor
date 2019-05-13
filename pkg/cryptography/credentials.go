@@ -10,6 +10,10 @@ import (
 	"strings"
 )
 
+/*
+  This is some next level reverse engineering.
+  Kudos to http://xn--thibaud-dya.fr/jenkins_credentials.html
+*/
 func DecryptCredentials(credentials *[]xml.Credential, secret []byte) ([]xml.Credential, error) {
 	decryptedCredentials := make([]xml.Credential, len(*credentials))
 	copy(decryptedCredentials, *credentials)
@@ -27,20 +31,31 @@ func DecryptCredentials(credentials *[]xml.Credential, secret []byte) ([]xml.Cre
 	return decryptedCredentials, nil
 }
 
+/*
+  New format of declaring a field to be a "base64 decoded secret" is by using {} brackets.
+  Example:
+
+    <password>{AQAAABAAAAAgPT7JbBVgyWiivobt0CJEduLyP0lB3uyTj+D5WBvVk6jyG6BQFPYGN4Z3VJN2JLDm}</password>
+
+  Old format does not use the {} brackets.
+  Instead jenkins seems to be usually suffixing the encoding with '=' sign.
+  Example:
+
+     <password>B+4pJjkJXD+pzyT9lcq8M8vF+p5YU4HmWy+MWldEdG4=</password>
+
+  I'm not sure how to distinguish other encoded secrets from the "old days of jenkins".
+  I don't want to comprehend Jenkins code from 4 years ago just to handle some edge cases.
+  I can't try to decode all values because there are some phrases which
+  would be false positive e.g. "root" (which is a valid base64 encoding)
+*/
 func isBase64EncodedSecret(text string) bool {
-	if strings.HasPrefix(text, "{") && strings.HasSuffix(text, "}") {
-		encoded := regexp.MustCompile("{(.*?)}").FindStringSubmatch(text)[1]
+	if isBracketed(text) {
+		encoded := textBetweenBrackets(text)
 		return isBase64Encoded(encoded)
 	}
-	// this is legacy stuff, back in the old days
-	// it seems to be jenkins specific way of saying "this is base64 encoded"
 	if strings.HasSuffix(text, "=") {
 		return isBase64Encoded(text)
 	}
-	// I'm not sure how to distinguish other encoded secrets from the "old days of jenkins"
-	// I don't want to read Jenkins code from 4 years ago just to handle some edge cases
-	// I can't try to decode all values because there are some phrases which
-	// would be false positive e.g. "root" (which is a valid base64 encoding)
 	return false
 }
 
@@ -52,14 +67,21 @@ func isBase64Encoded(text string) bool {
 	return false
 }
 
-func base64Decode(text string) []byte {
-	encoded := text
-	if strings.HasPrefix(text, "{") && strings.HasSuffix(text, "}") {
-		encoded = regexp.MustCompile("{(.*?)}").FindStringSubmatch(text)[1]
+func base64Decode(encoded string) []byte {
+	if isBracketed(encoded) {
+		encoded = textBetweenBrackets(encoded)
 	}
 	decoded, err := base64.StdEncoding.DecodeString(encoded)
 	check(err)
 	return decoded
+}
+
+func isBracketed(text string) bool {
+	return strings.HasPrefix(text, "{") && strings.HasSuffix(text, "}")
+}
+
+func textBetweenBrackets(text string) string {
+	return regexp.MustCompile("{(.*?)}").FindStringSubmatch(text)[1]
 }
 
 func decrypt(decoded []byte, secret []byte) string {
