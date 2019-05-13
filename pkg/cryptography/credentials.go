@@ -30,16 +30,24 @@ func DecryptCredentials(credentials *[]xml.Credential, secret []byte) ([]xml.Cre
 func isBase64EncodedSecret(text string) bool {
 	if strings.HasPrefix(text, "{") && strings.HasSuffix(text, "}") {
 		encoded := regexp.MustCompile("{(.*?)}").FindStringSubmatch(text)[1]
-		_, err := base64.StdEncoding.DecodeString(encoded)
-		if err == nil {
-			return true
-		}
+		return isBase64Encoded(encoded)
 	}
+	// this is legacy stuff, back in the old days
+	// it seems to be jenkins specific way of saying "this is base64 encoded"
 	if strings.HasSuffix(text, "=") {
-		_, err := base64.StdEncoding.DecodeString(text)
-		if err == nil {
-			return true
-		}
+		return isBase64Encoded(text)
+	}
+	// I'm not sure how to distinguish other encoded secrets from the "old days of jenkins"
+	// I don't want to read Jenkins code from 4 years ago just to handle some edge cases
+	// I can't try to decode all values because there are some phrases which
+	// would be false positive e.g. "root" (which is a valid base64 encoding)
+	return false
+}
+
+func isBase64Encoded(text string) bool {
+	_, err := base64.StdEncoding.DecodeString(text)
+	if err == nil {
+		return true
 	}
 	return false
 }
@@ -56,13 +64,13 @@ func base64Decode(text string) []byte {
 
 func decrypt(decoded []byte, secret []byte) string {
 	if decoded[0] == 1 { // you've gotta love jenkins
-		return decryptNewCredentials(decoded, secret)
+		return decryptNewFormatCredentials(decoded, secret)
 	} else {
-		return decryptLegacyCredentials(decoded, secret)
+		return decryptOldFormatCredentials(decoded, secret)
 	}
 }
 
-func decryptNewCredentials(decoded []byte, secret []byte) string {
+func decryptNewFormatCredentials(decoded []byte, secret []byte) string {
 	cipherText := decoded[1:]   // strip version
 	cipherText = cipherText[4:] // strip iv length
 	cipherText = cipherText[4:] // strip data length
@@ -81,7 +89,7 @@ func decryptNewCredentials(decoded []byte, secret []byte) string {
 	return withoutPadding
 }
 
-func decryptLegacyCredentials(decoded []byte, secret []byte) string {
+func decryptOldFormatCredentials(decoded []byte, secret []byte) string {
 	decrypted := string(decryptAes128Ecb(decoded, secret))
 	return strings.Replace(decrypted, "::::MAGIC::::", "", -1)
 }
