@@ -2,7 +2,7 @@ package cryptography
 
 import (
 	"crypto/aes"
-	"crypto/cipher"
+	cipherLib "crypto/cipher"
 	"encoding/base64"
 	"github.com/hoto/jenkins-credentials-decryptor/pkg/xml"
 	"log"
@@ -21,9 +21,9 @@ func DecryptCredentials(credentials *[]xml.Credential, secret []byte) ([]xml.Cre
 	for i, credential := range *credentials {
 		for key, value := range credential.Tags {
 			if isBase64EncodedSecret(value) {
-				encoded := stripBrackets(value)
-				decoded := base64Decode(encoded)
-				decrypted := decrypt(decoded, secret)
+				encodedCipher := stripBrackets(value)
+				cipher := base64Decode(encodedCipher)
+				decrypted := decrypt(cipher, secret)
 				decryptedCredentials[i].Tags[key] = decrypted
 			}
 		}
@@ -89,26 +89,26 @@ func textBetweenBrackets(text string) string {
 	return regexp.MustCompile("{(.*?)}").FindStringSubmatch(text)[1]
 }
 
-func decrypt(decoded []byte, secret []byte) string {
-	if decoded[0] == 1 { // you've gotta love jenkins
-		return decryptNewFormatCredentials(decoded, secret)
+func decrypt(cipher []byte, secret []byte) string {
+	if cipher[0] == 1 { // you've gotta love jenkins
+		return decryptNewFormatCredentials(cipher, secret)
 	} else {
-		return decryptOldFormatCredentials(decoded, secret)
+		return decryptOldFormatCredentials(cipher, secret)
 	}
 }
 
-func decryptNewFormatCredentials(decoded []byte, secret []byte) string {
-	cipherText := decoded[1:]   // strip version
-	cipherText = cipherText[4:] // strip iv length
-	cipherText = cipherText[4:] // strip data length
-	ivLength := 16              // TODO calculate this
-	iv := cipherText[:ivLength]
-	cipherText = cipherText[ivLength:] //strip iv
+func decryptNewFormatCredentials(cipher []byte, secret []byte) string {
+	cipher = cipher[1:] // strip version
+	cipher = cipher[4:] // strip iv length
+	cipher = cipher[4:] // strip data length
+	ivLength := 16      // TODO calculate this
+	iv := cipher[:ivLength]
+	cipher = cipher[ivLength:] //strip iv
 	block, err := aes.NewCipher(secret)
 	check(err)
-	mode := cipher.NewCBCDecrypter(block, iv)
-	mode.CryptBlocks(cipherText, cipherText)
-	trimmed := strings.TrimSpace(string(cipherText))
+	mode := cipherLib.NewCBCDecrypter(block, iv)
+	mode.CryptBlocks(cipher, cipher)
+	trimmed := strings.TrimSpace(string(cipher))
 
 	// TODO strip PKCS7 padding with math not by strings.Replace()
 	withoutPadding := strings.Replace(string(trimmed), string('\x05'), "", -1)
