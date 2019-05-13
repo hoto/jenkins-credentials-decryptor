@@ -66,8 +66,8 @@ hDA6SHkmIEPkO5nYhEGMryddRI7rsB4EKJaQ8AnJ7r4=
 	}
 )
 
-func Test_decrypts_credentials(t *testing.T) {
-	secret, _ := ioutil.ReadFile("../../test/resources/decrypted/hudson.util.Secret")
+func Test_decrypts_v1_credentials(t *testing.T) {
+	secret, _ := ioutil.ReadFile("../../test/resources/jenkins_2.141/decrypted/hudson.util.Secret")
 
 	credentials, _ := DecryptCredentials(&encryptedCredentials, secret)
 

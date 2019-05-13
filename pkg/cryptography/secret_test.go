@@ -12,7 +12,7 @@ const (
 )
 
 func Test_return_error_when_encrypted_secret_does_not_contain_checksum(t *testing.T) {
-	masterKey, _ := ioutil.ReadFile("../../test/resources/master.key")
+	masterKey, _ := ioutil.ReadFile("../../test/resources/jenkins_2.141/master.key")
 
 	_, err := DecryptHudsonSecret(masterKey, []byte(encryptedHudsonSecretWithNoMagic))
 
@@ -21,9 +21,9 @@ func Test_return_error_when_encrypted_secret_does_not_contain_checksum(t *testin
 }
 
 func Test_decrypts_secret(t *testing.T) {
-	masterKey, _ := ioutil.ReadFile("../../test/resources/master.key")
-	encryptedSecret, _ := ioutil.ReadFile("../../test/resources/hudson.util.Secret")
-	expectedDecryptedHudsonSecret, _ := ioutil.ReadFile("../../test/resources/decrypted/hudson.util.Secret")
+	masterKey, _ := ioutil.ReadFile("../../test/resources/jenkins_2.141/master.key")
+	encryptedSecret, _ := ioutil.ReadFile("../../test/resources/jenkins_2.141/hudson.util.Secret")
+	expectedDecryptedHudsonSecret, _ := ioutil.ReadFile("../../test/resources/jenkins_2.141/decrypted/hudson.util.Secret")
 
 	actualDecryptedHudsonSecret, _ := DecryptHudsonSecret(masterKey, encryptedSecret)
 
