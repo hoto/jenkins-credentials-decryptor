@@ -21,7 +21,8 @@ func DecryptCredentials(credentials *[]xml.Credential, secret []byte) ([]xml.Cre
 	for i, credential := range *credentials {
 		for key, value := range credential.Tags {
 			if isBase64EncodedSecret(value) {
-				decoded := base64Decode(value)
+				encoded := stripBrackets(value)
+				decoded := base64Decode(encoded)
 				decrypted := decrypt(decoded, secret)
 				decryptedCredentials[i].Tags[key] = decrypted
 			}
@@ -67,17 +68,21 @@ func isBase64Encoded(text string) bool {
 	return false
 }
 
-func base64Decode(encoded string) []byte {
-	if isBracketed(encoded) {
-		encoded = textBetweenBrackets(encoded)
+func stripBrackets(text string) string {
+	if isBracketed(text) {
+		return textBetweenBrackets(text)
 	}
-	decoded, err := base64.StdEncoding.DecodeString(encoded)
-	check(err)
-	return decoded
+	return text
 }
 
 func isBracketed(text string) bool {
 	return strings.HasPrefix(text, "{") && strings.HasSuffix(text, "}")
+}
+
+func base64Decode(encoded string) []byte {
+	decoded, err := base64.StdEncoding.DecodeString(encoded)
+	check(err)
+	return decoded
 }
 
 func textBetweenBrackets(text string) string {
