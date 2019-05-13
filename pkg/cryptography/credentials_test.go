@@ -8,7 +8,37 @@ import (
 )
 
 var (
-	encryptedCredentials = []xml.Credential{
+	oldFormatEncryptedCredentials = []xml.Credential{
+		{
+			Tags: map[string]string{
+				"username": "user_1",
+				"password": "B+4pJjkJXD+pzyT9lcq8M8vF+p5YU4HmWy+MWldEdG4=",
+			},
+		},
+		{
+			Tags: map[string]string{
+				"username":   "user_1",
+				"privateKey": "LINE_1\nLINE_2\nLINE_2",
+				"passphrase": "7fPxAjao0hmb9ggFCSl8WsvF+p5YU4HmWy+MWldEdG4=",
+			},
+		},
+	}
+
+	oldFormatDecryptedCredentials = []xml.Credential{
+		{
+			Tags: map[string]string{
+				"username": "user_1",
+				"password": "password_1\t\t\t\t\t\t\t\t\t"},
+		},
+		{
+			Tags: map[string]string{
+				"passphrase": "passphrase\t\t\t\t\t\t\t\t\t",
+				"username":   "user_1",
+				"privateKey": "LINE_1\nLINE_2\nLINE_2"},
+		},
+	}
+
+	newFormatEncryptedCredentials = []xml.Credential{
 		{
 			Tags: map[string]string{
 				"username": "xfireadmin",
@@ -29,7 +59,7 @@ var (
 			},
 		},
 	}
-	decryptedCredentials = []xml.Credential{
+	newFormatDecryptedCredentials = []xml.Credential{
 		{
 			Tags: map[string]string{
 				"username": "xfireadmin",
@@ -66,10 +96,18 @@ hDA6SHkmIEPkO5nYhEGMryddRI7rsB4EKJaQ8AnJ7r4=
 	}
 )
 
-func Test_decrypts_v1_credentials(t *testing.T) {
+func Test_decrypts_old_format_credentials(t *testing.T) {
+	secret, _ := ioutil.ReadFile("../../test/resources/jenkins_1.625.1/decrypted/hudson.util.Secret")
+
+	credentials, _ := DecryptCredentials(&oldFormatEncryptedCredentials, secret)
+
+	assert.Equal(t, credentials, oldFormatDecryptedCredentials)
+}
+
+func Test_decrypts_new_format_credentials(t *testing.T) {
 	secret, _ := ioutil.ReadFile("../../test/resources/jenkins_2.141/decrypted/hudson.util.Secret")
 
-	credentials, _ := DecryptCredentials(&encryptedCredentials, secret)
+	credentials, _ := DecryptCredentials(&newFormatEncryptedCredentials, secret)
 
-	assert.Equal(t, credentials, decryptedCredentials)
+	assert.Equal(t, credentials, newFormatDecryptedCredentials)
 }
