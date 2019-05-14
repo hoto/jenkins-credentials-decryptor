@@ -20,9 +20,9 @@ const (
 	usage           = `Usage:
 
   jenkins-credentials-decryptor \
-    --masterkey master.key \
-    --secret hudson.util.Secret \
-    --credentials credentials.xml
+    -m master.key \
+    -s hudson.util.Secret \
+    -c credentials.xml
 
 Flags:
 

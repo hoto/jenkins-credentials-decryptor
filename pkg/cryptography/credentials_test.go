@@ -8,7 +8,43 @@ import (
 )
 
 var (
-	encryptedCredentials = []xml.Credential{
+	oldFormatEncryptedCredentials = []xml.Credential{
+		{
+			Tags: map[string]string{
+				"username": "user_1",
+				"password": "B+4pJjkJXD+pzyT9lcq8M8vF+p5YU4HmWy+MWldEdG4=",
+			},
+		},
+		{
+			Tags: map[string]string{
+				"username":   "user_1",
+				"privateKey": "LINE_1\nLINE_2\nLINE_2",
+				"passphrase": "7fPxAjao0hmb9ggFCSl8WsvF+p5YU4HmWy+MWldEdG4=",
+			},
+		},
+	}
+
+	oldFormatDecryptedCredentials = []xml.Credential{
+		{
+			Tags: map[string]string{
+				"username": "user_1",
+				"password": "password_1\t\t\t\t\t\t\t\t\t"},
+		},
+		{
+			Tags: map[string]string{
+				"passphrase": "passphrase\t\t\t\t\t\t\t\t\t",
+				"username":   "user_1",
+				"privateKey": "LINE_1\nLINE_2\nLINE_2"},
+		},
+	}
+
+	newFormatEncryptedCredentials = []xml.Credential{
+		{
+			Tags: map[string]string{
+				"username": "xfireadmin",
+				"password": "AQAAABAAAAAQtnCexFYLFtmTQCL0x3wnirMnXVA7aZy+lfrfso+SjHI=",
+			},
+		},
 		{
 			Tags: map[string]string{
 				"username": "gitlabadmin",
@@ -23,7 +59,13 @@ var (
 			},
 		},
 	}
-	decryptedCredentials = []xml.Credential{
+	newFormatDecryptedCredentials = []xml.Credential{
+		{
+			Tags: map[string]string{
+				"username": "xfireadmin",
+				"password": "ilovexfire",
+			},
+		},
 		{
 			Tags: map[string]string{
 				"username": "gitlabadmin",
@@ -32,8 +74,8 @@ var (
 		},
 		{
 			Tags: map[string]string{
-				"username": "root",
-				"passphrase": "IEPkO5nYhEG",
+				"username":   "root",
+				"passphrase": "IEPkO5nYhEG",
 				"privateKey": `-----BEGIN RSA PRIVATE KEY-----
 MIICXAIBAAKBgQCwgxo7cl2RajAWFseL0JAIBJbZ6dFWBGcq7+TMkP8viDwfLj4u
 iYqERw+Y/lW0VZxuQuVMBfcCCINTG0S3W+MYPKiHKSaQWV53oOyPUCWaU1WjMHG4
@@ -54,10 +96,18 @@ hDA6SHkmIEPkO5nYhEGMryddRI7rsB4EKJaQ8AnJ7r4=
 	}
 )
 
-func Test_decrypts_credentials(t *testing.T) {
-	secret, _ := ioutil.ReadFile("../../test/resources/decrypted/hudson.util.Secret")
+func Test_decrypts_old_format_credentials(t *testing.T) {
+	secret, _ := ioutil.ReadFile("../../test/resources/jenkins_1.625.1/decrypted/hudson.util.Secret")
 
-	credentials, _ := DecryptCredentials(&encryptedCredentials, secret)
+	credentials, _ := DecryptCredentials(&oldFormatEncryptedCredentials, secret)
 
-	assert.Equal(t, credentials, decryptedCredentials)
+	assert.Equal(t, credentials, oldFormatDecryptedCredentials)
+}
+
+func Test_decrypts_new_format_credentials(t *testing.T) {
+	secret, _ := ioutil.ReadFile("../../test/resources/jenkins_2.141/decrypted/hudson.util.Secret")
+
+	credentials, _ := DecryptCredentials(&newFormatEncryptedCredentials, secret)
+
+	assert.Equal(t, credentials, newFormatDecryptedCredentials)
 }
