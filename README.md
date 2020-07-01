@@ -26,13 +26,19 @@ I've tested this on Jenkins 1.625.1 and 2.141
 
 ### Run using a binary
 
-Download binary from [releases](https://github.com/hoto/jenkins-credentials-decryptor/releases), Linux and Mac only:
+Mac:
+
+    brew install hoto/repo/jenkins-credentials-decryptor
+
+Mac or Linux:
 
     curl -L \
       "https://github.com/hoto/jenkins-credentials-decryptor/releases/download/0.0.8/jenkins-credentials-decryptor_0.0.8_$(uname -s)_$(uname -m)" \
        -o jenkins-credentials-decryptor
 
     chmod +x jenkins-credentials-decryptor
+    
+Or manually download binary from [releases](https://github.com/hoto/jenkins-credentials-decryptor/releases).
 
 SSH into Jenkins box and run:
 
