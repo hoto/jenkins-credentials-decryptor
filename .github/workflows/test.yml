@@ -1,0 +1,30 @@
+name: Test
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  release:
+    name: Build and test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.14
+        id: go
+
+      - name: Build
+        run: make build
+
+      - name: Test
+        run: make test
+
+      - name: Dry run goreleaser
+        run: make goreleaser-dry-run

@@ -1,15 +1,25 @@
 ---
 builds:
-  - env:
+  - main: ./cmd/jenkins-credentials-decryptor/main.go
+    env:
       - CGO_ENABLED=0
-    main: ./cmd/jenkins-credentials-decryptor/main.go
-archive:
-  format: binary
-  replacements:
-    darwin: Darwin
-    linux: Linux
-    386: i386
-    amd64: x86_64
+    ignore:
+      - goos: darwin
+        goarch: 386
+archives:
+  - format: binary
+    replacements:
+      darwin: Darwin
+      linux: Linux
+      386: i386
+      amd64: x86_64
+  - id: homebrew
+    name_template: "{{ .Binary }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+    replacements:
+      darwin: Darwin
+      linux: Linux
+      amd64: x86_64
+    format: zip
 checksum:
   name_template: 'checksums.txt'
 snapshot:
@@ -18,9 +28,12 @@ release:
   prerelease: auto
 changelog:
   sort: asc
-  filters:
-    exclude:
-      - '^Docs:'
-      - '^Test:'
-      - '^Update readme'
-      - '^Update readme.*'
+brews:
+  - github:
+      owner: hoto
+      name: homebrew-repo
+    folder: Formula
+    homepage:  https://github.com/hoto/jenkins-credentials-decryptor
+    description: Navigitae locally cloned repos.
+    test: |
+      system "#{bin}/jenkins-credentials-decryptor --version"

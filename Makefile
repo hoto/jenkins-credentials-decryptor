@@ -1,15 +1,13 @@
-.PHONY: clean dependencies build test all
-
-all: clean build test
+.PHONY: clean dependencies build test run install github-release github-release-dry-run goreleaser-dry-run
 
 clean:
 	go clean
 	rm -rf bin/ dist/
 
 dependencies:
-	go get -v -t -d ./...
-	go get -u github.com/golang/dep/cmd/dep
-	dep ensure
+	go mod download
+	go mod tidy
+	go mod verify
 
 build: dependencies
 	go build -o bin/jenkins-credentials-decryptor cmd/jenkins-credentials-decryptor/main.go
@@ -17,11 +15,17 @@ build: dependencies
 test:
 	go test -v ./...
 
+run: clean build
+	./bin/jenkins-credentials-decryptor $(arg)
+
 install: clean build
 	go install -v ./...
 
-github-release: dependencies
-	curl -sL https://git.io/goreleaser | bash
+goreleaser-release: clean dependencies
+	curl -sL https://git.io/goreleaser | VERSION=v0.137.0 bash
 
-github-release-dry-run: dependencies
+goreleaser-dry-run: clean dependencies
+	curl -sL https://git.io/goreleaser | VERSION=v0.137.0 bash -s -- --skip-publish --snapshot --rm-dist
+
+goreleaser-dry-run-local: dependencies
 	goreleaser release --skip-publish --snapshot --rm-dist

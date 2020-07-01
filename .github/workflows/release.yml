@@ -1,0 +1,28 @@
+name: Release - github, brew
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  release:
+    name: GitHub release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.14
+        id: go
+
+      - name: Unshallow git repo
+        run: git fetch --prune --unshallow
+
+      - name: Run goreleaser
+        env:
+          GITHUB_TOKEN: ${{ secrets.GORELEASER_GITHUB_TOKEN }}
+        run: make goreleaser-release
