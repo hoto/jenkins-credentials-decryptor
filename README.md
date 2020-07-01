@@ -27,7 +27,7 @@ I've tested this on Jenkins 1.625.1 and 2.141
 Download binary from [releases](https://github.com/hoto/jenkins-credentials-decryptor/releases), Linux and Mac only:
 
     curl -L \
-      "https://github.com/hoto/jenkins-credentials-decryptor/releases/download/0.0.7/jenkins-credentials-decryptor_0.0.7_$(uname -s)_$(uname -m)" \
+      "https://github.com/hoto/jenkins-credentials-decryptor/releases/download/0.0.8/jenkins-credentials-decryptor_0.0.8_$(uname -s)_$(uname -m)" \
        -o jenkins-credentials-decryptor
 
     chmod +x jenkins-credentials-decryptor
