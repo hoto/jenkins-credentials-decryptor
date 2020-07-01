@@ -1,8 +1,10 @@
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](/LICENSE)
 [![Docker hub](https://images.microbadger.com/badges/image/hoto/jenkins-credentials-decryptor.svg)](https://microbadger.com/images/hoto/jenkins-credentials-decryptor "Get your own image badge on microbadger.com")
-[![CircleCI](https://circleci.com/gh/hoto/jenkins-credentials-decryptor/tree/master.svg?style=svg)](https://circleci.com/gh/hoto/jenkins-credentials-decryptor/tree/master)
+[![Build status](https://github.com/hoto/jenkins-credentials-decryptor/workflows/Test/badge.svg?branch=master)](https://github.com/hoto/jenkins-credentials-decryptor/actions)
+[![Release](https://img.shields.io/github/release/hoto/jenkins-credentials-decryptor.svg?style=flat-square)](https://github.com/hoto/jenkins-credentials-decryptor/releases/latest)
+[![Powered By: goreleaser](https://img.shields.io/badge/powered%20by-goreleaser-green.svg?style=flat-square)](https://github.com/goreleaser/goreleaser)
 [![Go Report Card](https://goreportcard.com/badge/github.com/hoto/jenkins-credentials-decryptor)](https://goreportcard.com/report/github.com/hoto/jenkins-credentials-decryptor)
 [![Maintainability](https://api.codeclimate.com/v1/badges/27f61a82b9a5589f1a07/maintainability)](https://codeclimate.com/github/hoto/jenkins-credentials-decryptor/maintainability)
-[![Release](https://img.shields.io/github/release/hoto/jenkins-credentials-decryptor.svg?style=flat-square)](https://github.com/hoto/jenkins-credentials-decryptor/releases/latest)
 # Jenkins Credentials Decryptor
 
 Command line tool for decrypting and dumping Jenkins credentials.
