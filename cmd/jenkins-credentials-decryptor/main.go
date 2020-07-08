@@ -41,7 +41,7 @@ func print(decryptedCredentials []xml.Credential) {
 	for i, credential := range decryptedCredentials {
 		fmt.Println(i)
 		for k, v := range credential.Tags {
-			fmt.Printf("\t%s=%s\n", k, v)
+			fmt.Printf("\t%s: %s\n", k, v)
 		}
 	}
 }
