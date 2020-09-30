@@ -115,6 +115,10 @@ Build and test:
     make clean
     make build
     make test
+    
+Run a good ol' fashion manual smoke test:
+
+    make run arg="-m ./test/resources/jenkins_2.141/master.key -s ./test/resources/jenkins_2.141/hudson.util.Secret -c ./test/resources/jenkins_2.141/credentials.xml"
 
 Install to global golang bin directory:
 
