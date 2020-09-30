@@ -33,7 +33,7 @@ Mac:
 Mac or Linux:
 
     curl -L \
-      "https://github.com/hoto/jenkins-credentials-decryptor/releases/download/0.0.8/jenkins-credentials-decryptor_0.0.8_$(uname -s)_$(uname -m)" \
+      "https://github.com/hoto/jenkins-credentials-decryptor/releases/download/0.0.9/jenkins-credentials-decryptor_0.0.9_$(uname -s)_$(uname -m)" \
        -o jenkins-credentials-decryptor
 
     chmod +x jenkins-credentials-decryptor
