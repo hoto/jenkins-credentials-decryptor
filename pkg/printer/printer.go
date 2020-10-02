@@ -2,7 +2,6 @@ package printer
 
 import (
 	"bytes"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -60,9 +59,6 @@ func printJson(decryptedCredentials []xml.Credential) {
 	credentials := make([]Credential, 0, len(decryptedCredentials))
 	for _, credential := range decryptedCredentials {
 		t := credential.Tags
-		//secretBytes, err := base64.StdEncoding.DecodeString(t["secretBytes"])
-		secretBytes, err := base64.StdEncoding.WithPadding(base64.NoPadding).DecodeString(t["secretBytes"])
-		check(err)
 		temp := Credential{
 			AccessKey:          t["accessKey"],
 			Description:        t["description"],
@@ -78,7 +74,7 @@ func printJson(decryptedCredentials []xml.Credential) {
 			RoleId:             t["roleId"],
 			Scope:              t["scope"],
 			Secret:             strings.Trim(t["secret"], trimCutSet),
-			SecretBytes:        base64.StdEncoding.EncodeToString(secretBytes),
+			SecretBytes:        t["secretBytes"],
 			SecretId:           t["secretId"],
 			SecretKey:          t["secretKey"],
 			Username:           t["username"],
