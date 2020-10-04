@@ -22,10 +22,10 @@ const (
 	usage           = `Usage:
 
   jenkins-credentials-decryptor \
-    -j \
     -m master.key \
     -s hudson.util.Secret \
-    -c credentials.xml
+    -c credentials.xml \
+    -o json \
 
 Flags:
 

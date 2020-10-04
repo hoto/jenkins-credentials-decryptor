@@ -33,7 +33,7 @@ Mac:
 Mac or Linux:
 
     curl -L \
-      "https://github.com/hoto/jenkins-credentials-decryptor/releases/download/0.0.9/jenkins-credentials-decryptor_0.0.9_$(uname -s)_$(uname -m)" \
+      "https://github.com/hoto/jenkins-credentials-decryptor/releases/download/0.10.0/jenkins-credentials-decryptor_0.10.0_$(uname -s)_$(uname -m)" \
        -o jenkins-credentials-decryptor
 
     chmod +x jenkins-credentials-decryptor
@@ -45,14 +45,16 @@ SSH into Jenkins box and run:
     ./jenkins-credentials-decryptor \
       -m $JENKINS_HOME/secrets/master.key \
       -s $JENKINS_HOME/secrets/hudson.util.Secret \
-      -c $JENKINS_HOME/credentials.xml 
+      -c $JENKINS_HOME/credentials.xml \
+      -o json
       
 Or if you have the files locally:
 
     ./jenkins-credentials-decryptor \
       -m master.key \
       -s hudson.util.Secret \
-      -c credentials.xml 
+      -c credentials.xml \
+      -o json
       
 ### Run using docker
     
@@ -72,7 +74,8 @@ From Jenkins box:
       /jenkins-credentials-decryptor \
         -m master.key \
         -s hudson.util.Secret \
-        -c credentials.xml 
+        -c credentials.xml \
+        -o json
 
 With files locally:
 
@@ -87,7 +90,8 @@ With files locally:
       /jenkins-credentials-decryptor \
         -m master.key \
         -s hudson.util.Secret \
-        -c credentials.xml 
+        -c credentials.xml \
+        -o json
         
 ### Build the binary yourself
 
@@ -97,6 +101,43 @@ If you are worried about executing a random binary from the internet then:
     make build
     
 Binary will be in the `bin` folder.
+
+---
+
+### Example output
+
+Json output format:
+
+    $ ./jenkins-credentials-decryptor \
+           -m master.key \
+           -s hudson.util.Secret \
+           -c credentials.xml \
+           -o json
+          
+    [
+      {
+        "description": "Vault admin",
+        "id": "vault-admin",
+        "username": "admin",
+        "password": "9cy7Mbw@1Omm7db@q6eP3k62Wm*ev#",
+        "scope": "GLOBAL"
+      }
+    ]
+
+Text output format:
+ 
+    $ ./jenkins-credentials-decryptor \
+           -m master.key \
+           -s hudson.util.Secret \
+           -c credentials.xml \
+           -o text
+          
+    0
+            description: Vault admin
+            id: vault-admin
+            username: admin
+            password: 9cy7Mbw@1Omm7db@q6eP3k62Wm*ev#
+            scope: GLOBAL
 
 ---
  
@@ -118,7 +159,8 @@ Build and test:
     
 Run a good ol' fashion manual smoke test:
 
-    make run arg="-m ./test/resources/jenkins_2.141/master.key -s ./test/resources/jenkins_2.141/hudson.util.Secret -c ./test/resources/jenkins_2.141/credentials.xml"
+    make smoke-test-json
+    make smoke-test-text
 
 Install to global golang bin directory:
 

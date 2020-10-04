@@ -1,4 +1,4 @@
-.PHONY: clean dependencies build test run install github-release github-release-dry-run goreleaser-dry-run
+.PHONY: clean dependencies build test run install github-release github-release-dry-run goreleaser-dry-run smoke-test
 
 clean:
 	go clean
@@ -20,6 +20,19 @@ run: clean build
 
 install: clean build
 	go install -v ./...
+
+smoke-test: clean build
+	./bin/jenkins-credentials-decryptor \
+        -m ./test/resources/jenkins_2.141/master.key \
+        -s ./test/resources/jenkins_2.141/hudson.util.Secret \
+        -c ./test/resources/jenkins_2.141/credentials.xml \
+        -o $(OUTPUT_FORMAT)
+
+smoke-test-json: OUTPUT_FORMAT=json
+smoke-test-json: smoke-test
+
+smoke-test-text: OUTPUT_FORMAT=text
+smoke-test-text: smoke-test
 
 goreleaser-release: clean dependencies
 	curl -sL https://git.io/goreleaser | VERSION=v0.137.0 bash
