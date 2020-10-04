@@ -7,14 +7,20 @@ import (
 )
 
 var (
+	Version     string
+	ShortCommit string
+	BuildDate   string
+
 	MasterKeyPath      string
 	HudsonSecretPath   string
 	CredentialsXmlPath string
-	OutputFormat       string
+
+	OutputFormat string
 )
 
 const (
 	empty           = ""
+	showVersionDesc = "(optional) show version"
 	masterKeyDesc   = "(required) master.key file location"
 	secretDesc      = "(required) hudson.util.Secret file location"
 	credentialsDesc = "(required) credentials.xml file location"
@@ -25,7 +31,7 @@ const (
     -m master.key \
     -s hudson.util.Secret \
     -c credentials.xml \
-    -o json \
+    -o json
 
 Flags:
 
@@ -35,12 +41,20 @@ Flags:
 func ParseFlags() {
 	flag.Usage = overrideUsage()
 
+	showVersion := flag.Bool("version", false, showVersionDesc)
+
 	flag.StringVar(&MasterKeyPath, "m", empty, masterKeyDesc)
 	flag.StringVar(&HudsonSecretPath, "s", empty, secretDesc)
 	flag.StringVar(&CredentialsXmlPath, "c", empty, credentialsDesc)
 	flag.StringVar(&OutputFormat, "o", "json", outputFormat)
 
 	flag.Parse()
+
+	if *showVersion {
+		fmt.Printf("jenkins-credentials-decryptor version %s, commit %s, build %s\n",
+			Version, ShortCommit, BuildDate)
+		os.Exit(0)
+	}
 
 	if isEmpty(MasterKeyPath) || isEmpty(HudsonSecretPath) || isEmpty(CredentialsXmlPath) {
 		printUsageAndExit()
