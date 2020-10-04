@@ -1,4 +1,6 @@
-.PHONY: clean dependencies build test run install github-release github-release-dry-run goreleaser-dry-run smoke-test
+.PHONY: clean dependencies build test run install smoke-test smoke-test-json smoke-test-text github-release github-release-dry-run goreleaser-dry-run
+
+REPO_NAME = github.com/hoto/jenkins-credentials-decryptor
 
 clean:
 	go clean
@@ -10,7 +12,7 @@ dependencies:
 	go mod verify
 
 build: dependencies
-	go build -o bin/jenkins-credentials-decryptor cmd/jenkins-credentials-decryptor/main.go
+	go build -ldflags="-X '${REPO_NAME}/pkg/config.Version=0.0.0' -X '${REPO_NAME}/pkg/config.ShortCommit=HASH' -X '${REPO_NAME}/pkg/config.BuildDate=DATE'" -o bin/jenkins-credentials-decryptor cmd/jenkins-credentials-decryptor/main.go
 
 test:
 	go test -v ./...

@@ -1,6 +1,8 @@
 ---
 builds:
   - main: ./cmd/jenkins-credentials-decryptor/main.go
+    ldflags:
+      - '-s -w -X github.com/hoto/jenkins-credentials-decryptor/pkg/config.Version={{.Version}} -X github.com/hoto/jenkins-credentials-decryptor/pkg/config.ShortCommit={{.ShortCommit}} -X github.com/hoto/jenkins-credentials-decryptor/pkg/config.BuildDate={{.Date}}'
     env:
       - CGO_ENABLED=0
     ignore:
