@@ -1,12 +1,13 @@
 package main
 
 import (
-	"fmt"
-	"github.com/hoto/jenkins-credentials-decryptor/pkg/config"
-	"github.com/hoto/jenkins-credentials-decryptor/pkg/cryptography"
-	"github.com/hoto/jenkins-credentials-decryptor/pkg/xml"
 	"io/ioutil"
 	"log"
+
+	"github.com/hoto/jenkins-credentials-decryptor/pkg/config"
+	"github.com/hoto/jenkins-credentials-decryptor/pkg/cryptography"
+	"github.com/hoto/jenkins-credentials-decryptor/pkg/printer"
+	"github.com/hoto/jenkins-credentials-decryptor/pkg/xml"
 )
 
 func main() {
@@ -22,7 +23,8 @@ func main() {
 	check(err)
 
 	decryptedCredentials, _ := cryptography.DecryptCredentials(credentials, secret)
-	print(decryptedCredentials)
+
+	printer.Print(decryptedCredentials, config.OutputFormat)
 }
 
 func readFile(path string) []byte {
@@ -34,14 +36,5 @@ func readFile(path string) []byte {
 func check(err error) {
 	if err != nil {
 		log.Panic(err)
-	}
-}
-
-func print(decryptedCredentials []xml.Credential) {
-	for i, credential := range decryptedCredentials {
-		fmt.Println(i)
-		for k, v := range credential.Tags {
-			fmt.Printf("\t%s: %s\n", k, v)
-		}
 	}
 }

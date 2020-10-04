@@ -10,6 +10,7 @@ var (
 	MasterKeyPath      string
 	HudsonSecretPath   string
 	CredentialsXmlPath string
+	OutputFormat       string
 )
 
 const (
@@ -17,9 +18,11 @@ const (
 	masterKeyDesc   = "(required) master.key file location"
 	secretDesc      = "(required) hudson.util.Secret file location"
 	credentialsDesc = "(required) credentials.xml file location"
+	outputFormat    = "(optional) output format [json|text]"
 	usage           = `Usage:
 
   jenkins-credentials-decryptor \
+    -j \
     -m master.key \
     -s hudson.util.Secret \
     -c credentials.xml
@@ -35,6 +38,7 @@ func ParseFlags() {
 	flag.StringVar(&MasterKeyPath, "m", empty, masterKeyDesc)
 	flag.StringVar(&HudsonSecretPath, "s", empty, secretDesc)
 	flag.StringVar(&CredentialsXmlPath, "c", empty, credentialsDesc)
+	flag.StringVar(&OutputFormat, "o", "json", outputFormat)
 
 	flag.Parse()
 

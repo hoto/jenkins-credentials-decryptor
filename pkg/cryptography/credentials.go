@@ -4,10 +4,11 @@ import (
 	"crypto/aes"
 	cipherLib "crypto/cipher"
 	"encoding/base64"
-	"github.com/hoto/jenkins-credentials-decryptor/pkg/xml"
 	"log"
 	"regexp"
 	"strings"
+
+	"github.com/hoto/jenkins-credentials-decryptor/pkg/xml"
 )
 
 /*
@@ -20,10 +21,14 @@ func DecryptCredentials(credentials *[]xml.Credential, secret []byte) ([]xml.Cre
 
 	for i, credential := range *credentials {
 		for key, value := range credential.Tags {
+			base64Encode := false
+			if key == "secretBytes" {
+				base64Encode = true
+			}
 			if isBase64EncodedSecret(value) {
 				encodedCipher := stripBrackets(value)
 				cipher := base64Decode(encodedCipher)
-				decrypted := decrypt(cipher, secret)
+				decrypted := decrypt(cipher, secret, base64Encode)
 				decryptedCredentials[i].Tags[key] = decrypted
 			}
 		}
@@ -89,15 +94,15 @@ func textBetweenBrackets(text string) string {
 	return regexp.MustCompile("{(.*?)}").FindStringSubmatch(text)[1]
 }
 
-func decrypt(cipher []byte, secret []byte) string {
+func decrypt(cipher []byte, secret []byte, base64Encode bool) string {
 	if cipher[0] == 1 { // you've gotta love jenkins
-		return decryptNewFormatCredentials(cipher, secret)
+		return decryptNewFormatCredentials(cipher, secret, base64Encode)
 	} else {
-		return decryptOldFormatCredentials(cipher, secret)
+		return decryptOldFormatCredentials(cipher, secret, base64Encode)
 	}
 }
 
-func decryptNewFormatCredentials(cipher []byte, secret []byte) string {
+func decryptNewFormatCredentials(cipher []byte, secret []byte, base64Encode bool) string {
 	cipher = cipher[1:] // strip version
 	cipher = cipher[4:] // strip iv length
 	cipher = cipher[4:] // strip data length
@@ -108,17 +113,27 @@ func decryptNewFormatCredentials(cipher []byte, secret []byte) string {
 	check(err)
 	mode := cipherLib.NewCBCDecrypter(block, iv)
 	mode.CryptBlocks(cipher, cipher)
-	trimmed := strings.TrimSpace(string(cipher))
 
-	// TODO strip PKCS7 padding with math not by strings.Replace()
-	withoutPadding := strings.Replace(string(trimmed), string('\x05'), "", -1)
-	withoutPadding = strings.Replace(string(withoutPadding), string('\x06'), "", -1)
-	return withoutPadding
+	if base64Encode {
+		//return base64.StdEncoding.DecodeString(cipher)
+		return base64.StdEncoding.EncodeToString(cipher)
+	} else {
+		trimmed := strings.TrimSpace(string(cipher))
+
+		// TODO strip PKCS7 padding with math not by strings.Replace()
+		withoutPadding := strings.Replace(string(trimmed), string('\x05'), "", -1)
+		withoutPadding = strings.Replace(string(withoutPadding), string('\x06'), "", -1)
+		return withoutPadding
+	}
 }
 
-func decryptOldFormatCredentials(decoded []byte, secret []byte) string {
-	decrypted := string(decryptAes128Ecb(decoded, secret))
-	return strings.Replace(decrypted, "::::MAGIC::::", "", -1)
+func decryptOldFormatCredentials(decoded []byte, secret []byte, base64Encode bool) string {
+	if base64Encode {
+		return base64.StdEncoding.EncodeToString(decryptAes128Ecb(decoded, secret))
+	} else {
+		decrypted := string(decryptAes128Ecb(decoded, secret))
+		return strings.Replace(decrypted, "::::MAGIC::::", "", -1)
+	}
 }
 
 func check(err error) {
