@@ -1,13 +1,10 @@
 package xml
 
 import (
-	"github.com/beevik/etree"
 	"regexp"
 	"strings"
-)
 
-const (
-	credentialsXpath = "//java.util.concurrent.CopyOnWriteArrayList/*"
+	"github.com/beevik/etree"
 )
 
 type Credential struct {
@@ -21,19 +18,22 @@ type Credential struct {
   With xml 1.0+ this can eventually blow up.
 */
 func ParseCredentialsXml(credentialsXml []byte) (*[]Credential, error) {
+	credentialsXpaths := []string{"//java.util.concurrent.CopyOnWriteArrayList/*", "//list/*"}
 	credentials := make([]Credential, 0)
 	credentialsDocument, err := parseXml(credentialsXml)
 	if err != nil {
 		return &credentials, err
 	}
-	for _, credentialNode := range credentialsDocument.FindElements(credentialsXpath) {
-		credential := &Credential{
-			Tags: map[string]string{},
+	for _, credentialsXpath := range credentialsXpaths {
+		for _, credentialNode := range credentialsDocument.FindElements(credentialsXpath) {
+			credential := &Credential{
+				Tags: map[string]string{},
+			}
+			for _, child := range credentialNode.ChildElements() {
+				reduceFields(child, credential)
+			}
+			credentials = append(credentials, *credential)
 		}
-		for _, child := range credentialNode.ChildElements() {
-			reduceFields(child, credential)
-		}
-		credentials = append(credentials, *credential)
 	}
 	return &credentials, nil
 }
