@@ -11,14 +11,15 @@ Command line tool for decrypting and dumping Jenkins credentials.
 
 ### What is this all about
 
-Jenkins stores encrypted credentials in `credentials.xml` file.  
+Jenkins stores encrypted credentials in the `credentials.xml` file or in `config.xml` under folders. 
 To decrypt them you need the `master.key` and `hudson.util.Secret` files.  
 
-All three files are located inside Jenkins home directory:
+All files are located inside Jenkins home directory:
 
     $JENKINS_HOME/credentials.xml 
     $JENKINS_HOME/secrets/master.key
     $JENKINS_HOME/secrets/hudson.util.Secret
+    $JENKINS_HOME/jobs/example-folder/config.xml - Possible location
 
 ### Compatibility
 
