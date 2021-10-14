@@ -1,5 +1,4 @@
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](/LICENSE)
-[![Docker hub](https://images.microbadger.com/badges/image/hoto/jenkins-credentials-decryptor.svg)](https://microbadger.com/images/hoto/jenkins-credentials-decryptor "Get your own image badge on microbadger.com")
 [![Build status](https://github.com/hoto/jenkins-credentials-decryptor/workflows/Test/badge.svg?branch=master)](https://github.com/hoto/jenkins-credentials-decryptor/actions)
 [![Release](https://img.shields.io/github/release/hoto/jenkins-credentials-decryptor.svg?style=flat-square)](https://github.com/hoto/jenkins-credentials-decryptor/releases/latest)
 [![Powered By: goreleaser](https://img.shields.io/badge/powered%20by-goreleaser-green.svg?style=flat-square)](https://github.com/goreleaser/goreleaser)
