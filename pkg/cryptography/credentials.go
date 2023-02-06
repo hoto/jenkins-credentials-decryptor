@@ -4,6 +4,7 @@ import (
 	"crypto/aes"
 	cipherLib "crypto/cipher"
 	"encoding/base64"
+	"encoding/binary"
 	"log"
 	"regexp"
 	"strings"
@@ -99,10 +100,11 @@ func decrypt(cipher []byte, secret []byte) string {
 }
 
 func decryptNewFormatCredentials(cipher []byte, secret []byte) string {
-	cipher = cipher[1:] // strip version
-	cipher = cipher[4:] // strip iv length
-	cipher = cipher[4:] // strip data length
-	ivLength := 16      // TODO calculate this
+	ivLength := binary.BigEndian.Uint32(cipher[1:5])
+	dataLength := int(binary.BigEndian.Uint32(cipher[5:9]))
+
+	cipher = cipher[9:] // strip version, iv and data length
+
 	iv := cipher[:ivLength]
 	cipher = cipher[ivLength:] //strip iv
 	block, err := aes.NewCipher(secret)
@@ -110,12 +112,9 @@ func decryptNewFormatCredentials(cipher []byte, secret []byte) string {
 	mode := cipherLib.NewCBCDecrypter(block, iv)
 	mode.CryptBlocks(cipher, cipher)
 
-	trimmed := strings.TrimSpace(string(cipher))
-
-	// TODO strip PKCS7 padding with math not by strings.Replace()
-	withoutPadding := strings.Replace(string(trimmed), string('\x05'), "", -1)
-	withoutPadding = strings.Replace(string(withoutPadding), string('\x06'), "", -1)
-	return withoutPadding
+	// Remove PKCS padding
+	n := int(cipher[dataLength-1])
+	return string(cipher[:dataLength-n])
 }
 
 func decryptOldFormatCredentials(decoded []byte, secret []byte) string {
