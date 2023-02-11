@@ -10,7 +10,7 @@ Command line tool for decrypting and dumping Jenkins credentials.
 
 ### What is this all about
 
-Jenkins stores encrypted credentials in the `credentials.xml` file or in `config.xml` under folders. 
+Jenkins stores encrypted credentials in the `credentials.xml` file or in `config.xml`. 
 To decrypt them you need the `master.key` and `hudson.util.Secret` files.  
 
 All files are located inside Jenkins home directory:
@@ -33,7 +33,7 @@ Mac:
 Mac or Linux:
 
     curl -L \
-      "https://github.com/hoto/jenkins-credentials-decryptor/releases/download/1.2.0/jenkins-credentials-decryptor_1.2.0_$(uname -s)_$(uname -m)" \
+      "https://github.com/hoto/jenkins-credentials-decryptor/releases/download/1.2.1/jenkins-credentials-decryptor_1.2.1_$(uname -s)_$(uname -m)" \
        -o jenkins-credentials-decryptor
 
     chmod +x jenkins-credentials-decryptor
@@ -63,7 +63,7 @@ Or if you have the files locally:
       
 ### Run using docker
     
-If you are worried about me sending your credentials over the network (I can assure you I don't do that) 
+If you are worried about the binary sending your credentials over the network (it does not do that) 
 then run a container with disabled network:
 
 From Jenkins box:
@@ -105,7 +105,7 @@ If you are worried about executing a random binary from the internet then:
     git clone https://github.com/hoto/jenkins-credentials-decryptor.git
     make build
     
-Binary will be in the `bin` folder.
+Binary will be located at `bin/jenkins-credentials-decryptor`.
 
 ---
 
@@ -148,9 +148,11 @@ Text output format:
  
 ### Development
 
-Get:
+Clone:
 
-    go get github.com/hoto/jenkins-credentials-decryptor/cmd/jenkins-credentials-decryptor/
+    mkdir -p $GOPATH/src/github.com/hoto
+    cd $GOPATH/src/github.com/hoto
+    git clone https://github.com/hoto/jenkins-credentials-decryptor.git
 
 Download dependencies:
 
