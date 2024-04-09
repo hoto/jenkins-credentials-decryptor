@@ -26,7 +26,7 @@ I've tested this on Jenkins 1.625.1 and 2.141
 
 ### Run using a binary
 
-Mac:
+Mac (Intel CPU only):
 
     brew install hoto/repo/jenkins-credentials-decryptor
 
