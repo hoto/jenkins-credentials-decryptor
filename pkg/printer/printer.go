@@ -12,6 +12,7 @@ import (
 
 type Credential struct {
 	AccessKey          string `json:"accessKey,omitempty"`
+	ApiToken           string `json:"apiToken,omitempty"`
 	Description        string `json:"description,omitempty"`
 	FileName           string `json:"fileName,omitempty"`
 	IamMfaSerialNumber string `json:"iamMfaSerialNumber,omitempty"`
@@ -28,6 +29,7 @@ type Credential struct {
 	SecretBytes        string `json:"secretBytes,omitempty"`
 	SecretId           string `json:"secretId,omitempty"`
 	SecretKey          string `json:"secretKey,omitempty"`
+	Token              string `json:"token,omitempty"` // Added token field
 	Username           string `json:"username,omitempty"`
 }
 
@@ -61,6 +63,8 @@ func printJson(decryptedCredentials []xml.Credential) {
 		t := credential.Tags
 		temp := Credential{
 			AccessKey:          t["accessKey"],
+			ApiToken:           t["apiToken"],
+			Token:              t["token"],
 			Description:        t["description"],
 			FileName:           t["fileName"],
 			IamMfaSerialNumber: t["iamMfaSerialNumber"],
