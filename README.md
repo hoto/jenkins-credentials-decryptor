@@ -30,10 +30,10 @@ Mac:
 
     brew install hoto/repo/jenkins-credentials-decryptor
 
-Mac or Linux:
+Mac (Intel CPU only) or Linux:
 
     curl -L \
-      "https://github.com/hoto/jenkins-credentials-decryptor/releases/download/1.2.0/jenkins-credentials-decryptor_1.2.0_$(uname -s)_$(uname -m)" \
+      "https://github.com/hoto/jenkins-credentials-decryptor/releases/download/1.2.2/jenkins-credentials-decryptor_1.2.2_$(uname -s)_$(uname -m)" \
        -o jenkins-credentials-decryptor
 
     chmod +x jenkins-credentials-decryptor
