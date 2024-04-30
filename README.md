@@ -144,6 +144,43 @@ Text output format:
             password: 9cy7Mbw@1Omm7db@q6eP3k62Wm*ev#
             scope: GLOBAL
 
+K8s Secrets output format:
+ 
+    $ ./jenkins-credentials-decryptor \
+           -m master.key \
+           -s hudson.util.Secret \
+           -c credentials.xml \
+           -o k8secret
+          
+    $ cat k8sSecret.yaml
+            ---
+            apiVersion: v1
+            kind: Secret
+            metadata:
+            name: nexus-credentials
+            annotations:
+                jenkins.io/credentials-description: "Nexus Service user"
+            labels:
+                jenkins.io/credentials-type: usernamePassword
+            type: Opaque
+            stringData:
+            username: "serviceuser"
+            password: "21d355c7ef"
+            ---
+            apiVersion: v1
+            kind: Secret
+            metadata:
+            name: sonar-credentials
+            annotations:
+                jenkins.io/credentials-description: "Sonar token for service user"
+            labels:
+                jenkins.io/credentials-type: secretText
+            type: Opaque
+            stringData:
+            text: squ_28e0d122f56626fbd827c7309e4db7de0e439b72d
+
+
+
 ---
  
 ### Development

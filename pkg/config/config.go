@@ -24,7 +24,7 @@ const (
 	masterKeyDesc   = "(required) master.key file location"
 	secretDesc      = "(required) hudson.util.Secret file location"
 	credentialsDesc = "(required) credentials.xml file location"
-	outputFormat    = "(optional) output format [json|text]"
+	outputFormat    = "(optional) output format [json|text|k8secret]"
 	usage           = `Usage:
 
   jenkins-credentials-decryptor \

@@ -13,8 +13,8 @@ import (
 )
 
 /*
-  This is some next level reverse engineering.
-  Kudos to http://xn--thibaud-dya.fr/jenkins_credentials.html
+This is some next level reverse engineering.
+Kudos to http://xn--thibaud-dya.fr/jenkins_credentials.html
 */
 func DecryptCredentials(credentials *[]xml.Credential, secret []byte) ([]xml.Credential, error) {
 	decryptedCredentials := make([]xml.Credential, len(*credentials))
@@ -35,21 +35,21 @@ func DecryptCredentials(credentials *[]xml.Credential, secret []byte) ([]xml.Cre
 }
 
 /*
-  New format of declaring a field to be a "base64 decoded secret" is by using {} brackets.
-  Example:
+New format of declaring a field to be a "base64 decoded secret" is by using {} brackets.
+Example:
 
-    <password>{AQAAABAAAAAgPT7JbBVgyWiivobt0CJEduLyP0lB3uyTj+D5WBvVk6jyG6BQFPYGN4Z3VJN2JLDm}</password>
+	<password>{AQAAABAAAAAgPT7JbBVgyWiivobt0CJEduLyP0lB3uyTj+D5WBvVk6jyG6BQFPYGN4Z3VJN2JLDm}</password>
 
-  Old format does not use the {} brackets.
-  Instead jenkins seems to be usually suffixing the encoding with '=' sign.
-  Example:
+Old format does not use the {} brackets.
+Instead jenkins seems to be usually suffixing the encoding with '=' sign.
+Example:
 
-     <password>B+4pJjkJXD+pzyT9lcq8M8vF+p5YU4HmWy+MWldEdG4=</password>
+	<password>B+4pJjkJXD+pzyT9lcq8M8vF+p5YU4HmWy+MWldEdG4=</password>
 
-  I'm not sure how to distinguish other encoded secrets from the "old days of jenkins".
-  I don't want to comprehend Jenkins code from 4 years ago just to handle some edge cases.
-  I can't try to decode all values because there are some phrases which
-  would be false positive e.g. "root" (which is a valid base64 encoding)
+I'm not sure how to distinguish other encoded secrets from the "old days of jenkins".
+I don't want to comprehend Jenkins code from 4 years ago just to handle some edge cases.
+I can't try to decode all values because there are some phrases which
+would be false positive e.g. "root" (which is a valid base64 encoding)
 */
 func isBase64EncodedSecret(text string) bool {
 	if isBracketed(text) {

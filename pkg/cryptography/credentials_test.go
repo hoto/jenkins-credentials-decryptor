@@ -1,10 +1,11 @@
 package cryptography
 
 import (
-	"github.com/hoto/jenkins-credentials-decryptor/pkg/xml"
-	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"testing"
+
+	"github.com/hoto/jenkins-credentials-decryptor/pkg/xml"
+	"github.com/stretchr/testify/assert"
 )
 
 var (
@@ -106,7 +107,6 @@ func Test_decrypts_old_format_credentials(t *testing.T) {
 
 func Test_decrypts_new_format_credentials(t *testing.T) {
 	secret, _ := ioutil.ReadFile("../../test/resources/jenkins_2.141/decrypted/hudson.util.Secret")
-
 	credentials, _ := DecryptCredentials(&newFormatEncryptedCredentials, secret)
 
 	assert.Equal(t, credentials, newFormatDecryptedCredentials)
