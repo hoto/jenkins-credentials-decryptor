@@ -12,13 +12,13 @@ type Credential struct {
 }
 
 /*
-  Converts credentials.xml into a slice of structs with all fields reduced.
-  XML version is ignored as I could no find a parser which could handle xml 1.0+
-  Jenkins credentials.xml is using xml 1.1 but it does not seem to be using any of the new features.
-  With xml 1.0+ this can eventually blow up.
+Converts credentials.xml into a slice of structs with all fields reduced.
+XML version is ignored as I could no find a parser which could handle xml 1.0+
+Jenkins credentials.xml is using xml 1.1 but it does not seem to be using any of the new features.
+With xml 1.0+ this can eventually blow up.
 */
 func ParseCredentialsXml(credentialsXml []byte) (*[]Credential, error) {
-	credentialsXpaths := []string{"//java.util.concurrent.CopyOnWriteArrayList/*", "//list/*"}
+	credentialsXpaths := []string{"///java.util.concurrent.CopyOnWriteArrayList/*", "//list/*"}
 	credentials := make([]Credential, 0)
 	credentialsDocument, err := parseXml(credentialsXml)
 	if err != nil {
@@ -32,6 +32,7 @@ func ParseCredentialsXml(credentialsXml []byte) (*[]Credential, error) {
 			for _, child := range credentialNode.ChildElements() {
 				reduceFields(child, credential)
 			}
+			credential.Tags["secretType"] = credentialNode.Tag
 			credentials = append(credentials, *credential)
 		}
 	}
@@ -39,7 +40,7 @@ func ParseCredentialsXml(credentialsXml []byte) (*[]Credential, error) {
 }
 
 /*
-  There is a possibility that a field could get overridden but I haven't seen an example of that yet.
+There is a possibility that a field could get overridden but I haven't seen an example of that yet.
 */
 func reduceFields(node *etree.Element, credential *Credential) {
 	credential.Tags[node.Tag] = strings.TrimSpace(node.Text())
@@ -59,12 +60,12 @@ func parseXml(credentialsXml []byte) (*etree.Document, error) {
 }
 
 /*
- HACK ALERT:
- Stripping xml version because I could not find any decoder which would parse xml version 1.0+
- Jenkins uses xml version 1.1+ so this may blow up.
+HACK ALERT:
+Stripping xml version because I could not find any decoder which would parse xml version 1.0+
+Jenkins uses xml version 1.1+ so this may blow up.
 */
 func stripXmlVersion(credentials []byte) string {
 	return regexp.
-		MustCompile("(?m)^.*<?xml.*$").
+		MustCompile("<\\?xml(\\s)+version=[\"'](\\d+\\.\\d+)[\"'].*\\?>").
 		ReplaceAllString(string(credentials), "")
 }
