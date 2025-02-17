@@ -175,6 +175,10 @@ func printK8sSecrets(decryptedCredentials []xml.Credential) {
 			noNewLines := strings.ReplaceAll(s, "\n", "")
 			return noNewLines
 		},
+		"indent": func(spaces int, s string) string {
+			padding := strings.Repeat(" ", spaces)
+			return strings.ReplaceAll(s, "\n", "\n"+padding)
+		},
 	}
 
 	templ, err := template.New("k8sSecret.tmpl").Funcs(funcMap).ParseFS(k8sSecretTemplate, "k8sSecret.tmpl")
