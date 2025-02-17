@@ -24,16 +24,18 @@ All files are located inside Jenkins home directory:
 
 I've tested this on Jenkins 1.625.1 and 2.141
 
-### Run using a binary
+## Usage
 
-Mac:
+### Pre-Built Binary
+
+Mac (Intel CPU only):
 
     brew install hoto/repo/jenkins-credentials-decryptor
 
-Mac or Linux:
+Mac (Intel CPU only) or Linux:
 
     curl -L \
-      "https://github.com/hoto/jenkins-credentials-decryptor/releases/download/1.2.0/jenkins-credentials-decryptor_1.2.0_$(uname -s)_$(uname -m)" \
+      "https://github.com/hoto/jenkins-credentials-decryptor/releases/download/1.2.2/jenkins-credentials-decryptor_1.2.2_$(uname -s)_$(uname -m)" \
        -o jenkins-credentials-decryptor
 
     chmod +x jenkins-credentials-decryptor
@@ -61,7 +63,7 @@ Or if you have the files locally:
       -c credentials.xml \
       -o json
       
-### Run using docker
+### Docker
     
 If you are worried about the binary sending your credentials over the network (it does not do that) 
 then run a container with disabled network:
@@ -97,8 +99,15 @@ With files locally:
         -s hudson.util.Secret \
         -c credentials.xml \
         -o json
-        
-### Build the binary yourself
+
+### Nix
+
+Assuming you have enabled [Flakes](https://nixos.wiki/wiki/Flakes) in your Nix configuration, you can use the provided [`flake.nix`](./flake.nix) to build and run this project.
+
+- To build and run the binary without installing it: `nix run github:hoto/jenkins-credentials-decryptor -- --help`
+- To install in the current profile: `nix profile install github:hoto/jenkins-credentials-decryptor`
+
+### Build Locally
 
 If you are worried about executing a random binary from the internet then:
 

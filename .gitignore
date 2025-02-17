@@ -4,3 +4,6 @@
 vendor/
 bin/
 dist/
+
+/result
+/.pre-commit-config.yaml

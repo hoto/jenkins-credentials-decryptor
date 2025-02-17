@@ -1,0 +1,24 @@
+schema = 3
+
+[mod]
+  [mod."github.com/beevik/etree"]
+    version = "v1.1.0"
+    hash = "sha256-tvvc/RbFjTppdAKs1xUnMhfTXiW4Yr4CQ9NmrhF8uIk="
+  [mod."github.com/davecgh/go-spew"]
+    version = "v1.1.0"
+    hash = "sha256-zNSuzjr5n7zhK8VOciSigLMfbnHbmyzsWdTcMlV1kjQ="
+  [mod."github.com/pmezard/go-difflib"]
+    version = "v1.0.0"
+    hash = "sha256-/FtmHnaGjdvEIKAJtrUfEhV7EVo5A/eYrtdnUkuxLDA="
+  [mod."github.com/stretchr/objx"]
+    version = "v0.1.0"
+    hash = "sha256-az0Vd4MG3JXfaYbj0Q6AOmNkrXgmXDeQm8+BBiDXmdA="
+  [mod."github.com/stretchr/testify"]
+    version = "v1.6.1"
+    hash = "sha256-GwrZr9lU8698GFal0l/sFQ/TYP/eQIeNnnYJWpe3/IE="
+  [mod."gopkg.in/check.v1"]
+    version = "v0.0.0-20161208181325-20d25e280405"
+    hash = "sha256-1w5mgYaZUC52uzDnpXXVqle/9AVkH4WePSrQFOVANUw="
+  [mod."gopkg.in/yaml.v3"]
+    version = "v3.0.0-20200313102051-9f266ea9e77c"
+    hash = "sha256-ZXiVLum4UY7Xg2LUMJOk3m248lOrab5FBxWU9emIaq0="
